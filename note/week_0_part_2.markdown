@@ -1,5 +1,8 @@
 ### week 0 part 2
 
+homework
+url : http://35.74.181.119
+
 write nginx config in site-available and soft link to site-enable
 
 ```txt
@@ -49,7 +52,27 @@ sudo systemctl status nginx
 sudo nginx -t (check config syntax if correct)
 ```
 
-######
+mysql
+
+```
+sudo apt install mysql-server -y
+sudo systemctl start mysql
+sudo systemctl enable mysql
+sudo mysql
+SELECT user, host, authentication_string, plugin FROM mysql.user WHERE user='root';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'mysqlpwd123';//set pwd
+FLUSH PRIVILEGES;
+```
+
+mysql table
+
+```sql
+CREATE TABLE stylish(
+  id BIGINT UNSIGNED AUTO_INCREMENT,
+  title VARCHAR(255),
+  PRIMARY KEY(id)
+);
+```
 
 run java app on background
 
