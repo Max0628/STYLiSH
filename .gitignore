@@ -1,0 +1,28 @@
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+
+### Eclipse ###
+.classpath
+.project
+.settings/
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.iws
+
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### macOS ###
+.DS_Store
+
+### Logs ###
+logs/
+*.log
