@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>新增商品後台</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .form-container {
+      width: 500px;
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .form-row label {
+      width: 100px;
+      text-align: right;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    .form-row input[type="text"] {
+      flex: 1;
+      padding: 5px;
+      font-size: 14px;
+      border: 1px solid;
+    }
+
+    .variant-container input[type="text"] {
+      flex: 1;
+      padding: 5px;
+      font-size: 14px;
+      border: 1px solid;
+    }    
+
+    .form-row input[type="file"] {
+      flex: 1;
+      font-size: 12px;
+      padding: 2px;
+    }
+
+    .variant-section {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    
+    .variant-label {
+      text-align: center;
+      width: 100px;
+      text-align: right;
+      align-items: center;
+      font-size: 14px;
+      margin-right: 10px;
+      padding-top: 5px;
+    }
+
+    .variant-group {
+      display: flex;
+      gap: 5px;
+    }
+
+    .variant-group input {
+      width: 60px;
+      padding: 3px;
+      font-size: 12px;
+      border: 1px solid;
+    }
+
+
+    .removeVariant.addVariant  {
+      font-size: 5px;
+      padding: 2px 5px;
+      width: 40px;
+      border: 1px solid ;
+      cursor: pointer;
+    }
+
+    /* 送出按鈕 */
+    #submit {
+      margin-top: 15px;
+      padding: 8px;
+      font-size: 14px;
+      width: 100%;
+      border: 1px solid ;
+      cursor: pointer;
+    }
+
+    li {
+     list-style-type: none; 
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1 style="text-align: center">新增商品後台</h1>
+  <form id="productForm" class="form-container">
+
+    <!-- 單欄位 -->
+    <div class="form-row">
+      <label for="category">category:</label>
+      <input type="text" id="category" name="category">
+    </div>
+
+    <div class="form-row">
+      <label for="title">title:</label>
+      <input type="text" id="title" name="title">
+    </div>
+
+    <div class="form-row">
+      <label for="description">description:</label>
+      <input type="text" id="description" name="description">
+    </div>
+
+    <div class="form-row">
+      <label for="price">price:</label>
+      <input type="text" id="price" name="price">
+    </div>
+
+    <div class="form-row">
+      <label for="texture">texture:</label>
+      <input type="text" id="texture" name="texture">
+    </div>
+
+    <div class="form-row">
+      <label for="wash">wash:</label>
+      <input type="text" id="wash" name="wash">
+    </div>
+
+    <div class="form-row">
+      <label for="place">place:</label>
+      <input type="text" id="place" name="place">
+    </div>
+
+    <div class="form-row">
+      <label for="note">note:</label>
+      <input type="text" id="note" name="note">
+    </div>
+
+    <div class="form-row">
+      <label for="story">story:</label>
+      <input type="text" id="story" name="story">
+    </div>
+
+    <!-- 規格選擇區域 -->
+    <div class="variant-section">
+      <span class="variant-label">規格選擇:</span>
+      <div class="variant-container">
+        <ul>
+          <li>
+            <div class="variant-group">
+              <input type="text" class="colorCode" placeholder="顏色代碼">
+              <input type="text" class="colorName" placeholder="顏色名稱">
+              <input type="text" class="size" placeholder="尺寸">
+              <input type="text" class="stock" placeholder="庫存">
+              <button type="button" class="removeVariant">移除</button>
+              <button type="button" class="addVariant">新增</button>
+           </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 主圖片 -->
+    <div class="form-row">
+      <label for="mainImage">mainImage:</label>
+      <input type="file" id="mainImage" name="mainImage">
+    </div>
+
+    <!-- 子圖片們 -->
+    <div class="form-row">
+      <label for="images">images:</label>
+      <input type="file" id="images" name="files[]" multiple>
+    </div>
+
+    <!-- 提交表單按鈕 -->
+    <button type="submit" id="submit">送出</button>
+  </form>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="js/product.js"></script>
