@@ -26,3 +26,8 @@ target/
 ### Logs ###
 logs/
 *.log
+
+## others
+.scannerwork/
+.vscode/
+sonar-project.properties
