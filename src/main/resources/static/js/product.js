@@ -1,4 +1,8 @@
-//當畫面 loading 完成 html 檔案
+/**
+ * 當 DOM 下載完成，啟動以下程式碼，為此程式碼的啟動點
+ * @async
+ * @author tashuchiu
+ */
 $(document).ready(() => {
   //點擊送出表單按鈕
   $('#submit').on('click', async (event) => {
@@ -19,7 +23,11 @@ const API_CONFIG = {
   method: 'POST',
 };
 
-//設定抓取表單資訊的方法
+/**
+ * 設定抓取表單資訊的方法
+ * @return {Object}
+ * @author tashuchiu
+ */
 function getFormData() {
   let formData = new FormData();
 
@@ -84,7 +92,10 @@ function getFormData() {
   return formData;
 };
 
-//按下新增遍體
+/**
+ * 按下新增variant
+ * @author tashuchiu
+ */
 $('ul').on('click', '.addVariant', function () {
   let newVariant =
     `<li>` +
@@ -100,7 +111,10 @@ $('ul').on('click', '.addVariant', function () {
   $(this).closest('li').after(newVariant);
 });
 
-//移除變體
+/**
+ * 按下移除variant
+ * @author tashuchiu
+ */
 $('ul').on('click', '.removeVariant', function () {
   let currentLi = $(this).closest('li');
   //如果為第一個變體，則無法移除
@@ -110,7 +124,15 @@ $('ul').on('click', '.removeVariant', function () {
   currentLi.remove();
 });
 
-//通用的 api 函數
+/**
+ * 打API到後端，接收回傳字串
+ * @async
+ * @param {String} url 
+ * @param {String} method 
+ * @param {Object} data
+ * @return {Promise}
+ * @author tashuchiu
+ */
 async function fetchApi(url, method, data) {
   return fetch(url, {
     method: method,
@@ -130,10 +152,21 @@ async function fetchApi(url, method, data) {
     });
 };
 
+/**
+ * 接收表單資料，加上 apiConfig 去打 API
+ * @param {Object} formData 
+ * @returns {function}
+ * @author tashuchiu
+ */
 function fetchProductApi(formData) {
   return fetchApi(API_CONFIG.url, API_CONFIG.method, formData);
 };
 
+/**
+ * 處理請求成功的狀況
+ * @param {*} response
+ * @author tashuchiu 
+ */
 function handleApiResponse(response) {
   console.log('API response ', response);
   alert('提交成功');
