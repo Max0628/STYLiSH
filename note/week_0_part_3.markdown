@@ -98,6 +98,21 @@ PRIMARY KEY(product_id,size_id,color_id),這邊把最常用的 product_id 放到
 4. 圖片超過一定大小不允許上傳？
 5. 設定WebConfig來做到url跟資料夾的映射(url可以是http開頭，像是架了個本地image server)
 6. 可以存在本地的資料夾 未來放到ec2的資料夾應該也可以用
+7. mysql 資料庫應該只會儲存圖片的 uuid + 名稱
+8. 圖片本身的位置，可能會放在本地，aws ec2 裡面的資料架，未來會放在 s3
+9. 訪問的路徑，在本地 domain : http://localhost:8080, EC2: http://35.74.181.119, S3 bucket: ??
+10.訪問的資料夾：
+圖片訪問的路徑
+picture access url :
+url = domain + directory + images name( uuid + name )
+網址是組出來的
+mysql 裡面只會儲存 uuid + name
+
+| location | domain                   | directory                | name                                                    |
+| -------- | ------------------------ | ------------------------ | ------------------------------------------------------- |
+| local    | http://localhost:8080    | /images                  | a3d2457b-ea4b-4620-85ba-55eddcf0054a_201902191247_0.jpg |
+| Ec2      | http://35.74.181.119     | /home/ubuntu/image       | a3d2457b-ea4b-4620-85ba-55eddcf0054a_201902191247_0.jpg |
+| S3       |                          |                          | a3d2457b-ea4b-4620-85ba-55eddcf0054a_201902191247_0.jpg |
 ```
 
 ### 錯誤處理

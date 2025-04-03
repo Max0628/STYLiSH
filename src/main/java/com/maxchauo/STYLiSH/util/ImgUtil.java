@@ -18,9 +18,6 @@ public class ImgUtil {
   @Value("${upload.path}") // 抓取 前儲存檔案的資料夾路徑
   private String uploadPngDirectory;
 
-  @Value("${upload.domain}") // 抓取當前的 domain 寫死在 .properties 裡面
-  private String uploadPngDomain;
-
   /**
    * 單張圖片解析出圖片名稱，二進位資料
    *
@@ -33,10 +30,9 @@ public class ImgUtil {
         String uniqueImageName = UUID.randomUUID() + "_" + image.getOriginalFilename();
         Path path = Paths.get(uploadPngDirectory, uniqueImageName);
         Files.write(path, image.getBytes());
-        return uploadPngDomain + "/images/" + uniqueImageName;
+        return uniqueImageName;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       log.warn("saveImage exception: ", e);
     }
     return "";
@@ -57,13 +53,12 @@ public class ImgUtil {
             String uniqueImageName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             Path path = Paths.get(uploadPngDirectory, uniqueImageName);
             Files.write(path, image.getBytes());
-            imagesUrl.add(uploadPngDomain + "/images/" + uniqueImageName);
+            imagesUrl.add(uniqueImageName);
           }
         }
         return imagesUrl;
       }
     } catch (Exception e) {
-      e.printStackTrace();
       log.warn("saveImages exception: ", e);
     }
     return Collections.emptyList();

@@ -23,11 +23,11 @@ public class AdminService {
     try {
       if (CommonUtil.isNotEmpty(product) && CommonUtil.isNotEmpty(mainImage) && CommonUtil.isNotEmpty(images) && CommonUtil.isNotEmpty(variants)) {
 
-        String mainImageUrl = imgUtil.saveImage(mainImage); // store mainImage to dir , and return url string;
-        product.setUrl(mainImageUrl); // make productForm complete
+        String mainImageName = imgUtil.saveImage(mainImage); // store mainImage to dir , and return url string;
+        product.setUrl(mainImageName); // make productForm complete
         long productId = repo.insertProduct(product);
-        List<String> imagesUrl = imgUtil.saveImages(images); // store images to dir
-        int imagesId = repo.insertImage(imagesUrl, productId); // insert images ot DB
+        List<String> imagesName = imgUtil.saveImages(images); // store images to dir
+        int imagesId = repo.insertImage(imagesName, productId); // insert images ot DB
 
         System.out.println("variants: "+variants.toString());
         // took data in current variants to compose size / color / variantDto
