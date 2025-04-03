@@ -62,6 +62,14 @@ foreign key 開關
 SET FOREIGN_KEY_CHECKS=0; 關閉
 SET FOREIGN_KEY_CHECKS=1; 開啟
 ```
+dump file manipulation
+```sql
+把目前db的資料放到dump檔案
+mysqldump -u root -p --databases stylish > stylish.sql
+
+把dump檔案的資料倒入到已經建立好的db
+mysql -u root -p stylish < stylish.sql
+```
 
 設計完畢
 學習到
