@@ -134,7 +134,7 @@ public class AdminRepository {
   public boolean insertVariant(long productId, long colorId, long sizeId, long stock) {
 //    String stock = variantDto.getStock();
     String INSERT_VARIANT_SQL =
-        "INSERT INTO `variant`(size_id, color_id, product_id, stock) VALUES(:sizeId, :colorId, :productId, :stock)";
+        "INSERT INTO `Variant`(size_id, color_id, product_id, stock) VALUES(:sizeId, :colorId, :productId, :stock)";
     MapSqlParameterSource param = new MapSqlParameterSource()
             .addValue("sizeId", sizeId)
             .addValue("colorId", colorId)
@@ -155,7 +155,7 @@ public class AdminRepository {
   }
 
   public int insertImage(List<String> imagesUrl, long productId) {
-    String INSERT_IMAGES_SQL = " INSERT INTO `image`(url,product_id) VALUES(:url,:productId)";
+    String INSERT_IMAGES_SQL = " INSERT INTO `Image`(url,product_id) VALUES(:url,:productId)";
     List<Map<String, Object>> arrayListMap = new ArrayList<Map<String, Object>>(); // 用 arrayList 動態插入的特性來插入
     for (String imageUrl : imagesUrl) {
       Map<String, Object> paramMap = new HashMap<>();
