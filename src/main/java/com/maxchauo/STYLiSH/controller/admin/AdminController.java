@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author tashuchiu
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
 public class AdminController {
   private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(AdminController.class);

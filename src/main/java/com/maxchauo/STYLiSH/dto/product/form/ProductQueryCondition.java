@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VariantForm {
-  private String colorCode;
-  private String colorName;
-  private String size;
-  private String stock;
+public class ProductQueryCondition {
+  private String category;
+  private Integer paging;
+  private Integer pageSize;
 }

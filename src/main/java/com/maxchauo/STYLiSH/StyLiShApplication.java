@@ -13,10 +13,9 @@ public class StyLiShApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(StyLiShApplication.class, args);
 	}
-	
+
 	@GetMapping("/")
-	public String SayHi(){
-		System.out.println("Hi I AM MAX");
+	public String sayHi(){
 		return "hi i am max!";
 	}
 }

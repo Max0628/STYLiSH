@@ -58,7 +58,6 @@ const fetchProductApi = (apiParam) => {
  * @returns
  */
 const getApiParam = (type, data) => {
-console.log("data: ",JSON.stringify(data));
   //表單提交
   if (type == 'productFrom') {
     return {

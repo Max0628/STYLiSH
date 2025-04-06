@@ -1,5 +1,6 @@
-package com.maxchauo.STYLiSH.dto.product.form;
+package com.maxchauo.STYLiSH.dto.product.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VariantForm {
+public class VariantOutputDto {
+  @JsonProperty("color_code")
   private String colorCode;
-  private String colorName;
   private String size;
-  private String stock;
+  private Long stock;
 }
