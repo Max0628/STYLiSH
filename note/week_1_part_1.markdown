@@ -8,8 +8,7 @@ ProductList
 http://127.0.0.1:8080/api/v1/products/women?paging=2
 http://127.0.0.1:8080/api/v1/products/men
 http://127.0.0.1:8080/api/v1/products/accessories
-
-
+http://35.74.181.119:8080/api/v1/products/women?paging=2
 ```
 
 ### 商品頁碼取畫面邏輯
