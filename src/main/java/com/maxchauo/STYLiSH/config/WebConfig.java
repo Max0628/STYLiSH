@@ -11,9 +11,9 @@ public class WebConfig implements WebMvcConfigurer {
   private String uploadPngDirectory;
 
   @Override
-  public void addResourceHandlers(ResourceHandlerRegistry registry){
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
     registry
-            .addResourceHandler("/images/**")// setting url path mapping to local directory rule.
-            .addResourceLocations("file:" + uploadPngDirectory + "/");
+        .addResourceHandler("/images/**") // setting url path mapping to local directory rule.
+        .addResourceLocations("file:" + uploadPngDirectory + "/");
   }
 }

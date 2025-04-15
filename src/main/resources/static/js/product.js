@@ -61,7 +61,7 @@ const getApiParam = (type, data) => {
   //表單提交
   if (type == 'productFrom') {
     return {
-      url: '/admin/upload',
+      url: '/api/v1/admin/upload',
       method: 'POST',
       data: data || {},
     };

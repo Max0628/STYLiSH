@@ -10,57 +10,53 @@ import com.maxchauo.STYLiSH.util.ImgUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class AdminService {
+
   private final AdminRepository repo;
   private final ImgUtil imgUtil;
+
+  @Transactional
   public boolean insertProduct(ProductForm product, MultipartFile mainImage, List<MultipartFile> images, List<VariantForm> variants) {
-    try {
-      if (CommonUtil.isNotEmpty(product) && CommonUtil.isNotEmpty(mainImage) && CommonUtil.isNotEmpty(images) && CommonUtil.isNotEmpty(variants)) {
 
-        String mainImageName = imgUtil.saveImage(mainImage); // store mainImage to dir , and return url string;
-        product.setUrl(mainImageName); // make productForm complete
-        long productId = repo.insertProduct(product);
-        List<String> imagesName = imgUtil.saveImages(images); // store images to dir
-        int imagesId = repo.insertImage(imagesName, productId); // insert images ot DB
-
-        System.out.println("variants: "+variants.toString());
-        // took data in current variants to compose size / color / variantDto
-        for (VariantForm item : variants) {
-          System.out.println("item: "+item.toString());
-          String colorCode = item.getColorCode();
-          String colorName = item.getColorName();
-          String size = item.getSize();
-          String stock = item.getStock();
-
-          // current colorDto
-          ColorForm colorDto = new ColorForm();
-          colorDto.setCode(colorCode);
-          colorDto.setName(colorName);
-
-          // current size
-          SizeFrom sizeDto = new SizeFrom();
-          sizeDto.setSize(size);
-
-          long colorId = repo.insertColor(colorDto);
-          long sizeId = repo.insertSize(sizeDto);
-          // insert variant
-          boolean insertVariantSucceed = repo.insertVariant(productId, colorId, sizeId, Long.parseLong(stock));
-          if (colorId == 0 || sizeId == 0 || !insertVariantSucceed || imagesId == 0) {
-            return false;
-          }
-        }
-        return true;
-      }
-    } catch (Exception e) {
-      log.warn("AdminService exception: "+ e);
-      return false;
+    if (!CommonUtil.isNotEmpty(product) || !CommonUtil.isNotEmpty(mainImage) || !CommonUtil.isNotEmpty(images) || !CommonUtil.isNotEmpty(variants)) {
+      throw new IllegalArgumentException("參數不得為空");
     }
-    return false;
+
+    String mainImageName = imgUtil.saveImage(mainImage);
+    product.setUrl(mainImageName);
+    long productId = repo.insertProduct(product);
+
+    List<String> imagesName = imgUtil.saveImages(images);
+    int imagesId = repo.insertImage(imagesName, productId);
+    if (imagesId == 0) {
+      throw new RuntimeException("圖片儲存失敗");
+    }
+
+    for (VariantForm item : variants) {
+      ColorForm colorDto = new ColorForm(item.getColorCode(), item.getColorName());
+      SizeFrom sizeDto = new SizeFrom(item.getSize());
+
+      long colorId = repo.insertColor(colorDto);
+      long sizeId = repo.insertSize(sizeDto);
+
+      if (colorId == 0 || sizeId == 0) {
+        throw new RuntimeException("顏色或尺寸儲存失敗");
+      }
+
+      boolean success = repo.insertVariant(productId, colorId, sizeId, Long.parseLong(item.getStock()));
+      if (!success) {
+        throw new RuntimeException("variant 儲存失敗");
+      }
+    }
+
+    return true;
   }
 }

@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductQueryCondition {
+public class ProductQueryConditionForm {
+  private Integer id;
+  private String keyword;
   private String category;
   private Integer paging;
   private Integer pageSize;

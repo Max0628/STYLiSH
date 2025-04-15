@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 public class VariantOutputDto {
   @JsonProperty("color_code")
   private String colorCode;
+
   private String size;
   private Long stock;
 }

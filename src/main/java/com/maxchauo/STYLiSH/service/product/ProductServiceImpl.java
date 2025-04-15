@@ -1,23 +1,31 @@
 package com.maxchauo.STYLiSH.service.product;
 
 import com.maxchauo.STYLiSH.dto.product.dto.*;
-import com.maxchauo.STYLiSH.dto.product.form.ProductQueryCondition;
-import com.maxchauo.STYLiSH.dto.product.response.ProductResponse;
+import com.maxchauo.STYLiSH.dto.product.form.ProductQueryConditionForm;
+import com.maxchauo.STYLiSH.dto.product.dto.ProductResponseDto;
 import com.maxchauo.STYLiSH.repository.product.ProductRepository;
+import com.maxchauo.STYLiSH.util.CommonUtil;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-
+@Log4j2
 @Service
 public class ProductServiceImpl implements ProductService{
   private  final  ProductRepository repo;
+  @Value("${upload.domain}")
+  private String domain;
+
+  @Value("${upload.url-path}")
+  private  String urlpath;
 
   public ProductServiceImpl(ProductRepository repo) {
     this.repo = repo;
   }
 
   @Override
-  public ProductResponse findProductByCondition(ProductQueryCondition condition) {
+  public ProductResponseDto findProductByCondition(ProductQueryConditionForm condition) {
 
     try{
       List<ProductDto>  productDtos = repo.findProductByCondition(condition);
@@ -65,8 +73,12 @@ public class ProductServiceImpl implements ProductService{
         dto.setTexture(p.getTexture());
         dto.setNote(p.getNote());
         dto.setStory(p.getStory());
-        dto.setMainImage(p.getMainImage());
-        dto.setImages(imageMap.getOrDefault(pid,List.of()));
+        dto.setMainImage(CommonUtil.buildFullImageUrl(domain, urlpath, p.getMainImage()));
+        List<String> fullImageUrls = new ArrayList<>();
+        for (String img : imageMap.getOrDefault(pid, List.of())) {
+          fullImageUrls.add(CommonUtil.buildFullImageUrl(domain, urlpath, img));
+        }
+        dto.setImages(fullImageUrls);
 
         List<VariantOutputDto> variantList = new ArrayList<>();
         Set<String> sizeSet = new HashSet<>();
@@ -87,10 +99,10 @@ public class ProductServiceImpl implements ProductService{
         dto.setSizes(sizeSet);
         result.add(dto);
       }
-      return new ProductResponse(result,nextPaging);
+      return new ProductResponseDto(result,nextPaging);
     }catch (Exception e){
-      e.printStackTrace();
+      log.warn("findProductByCondition exception: "+e);
     }
-    return new ProductResponse(List.of(),null);
+    return new ProductResponseDto(List.of(),null);
   }
 }

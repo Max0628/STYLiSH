@@ -1,8 +1,8 @@
 package com.maxchauo.STYLiSH.service.product;
 
-import com.maxchauo.STYLiSH.dto.product.form.ProductQueryCondition;
-import com.maxchauo.STYLiSH.dto.product.response.ProductResponse;
+import com.maxchauo.STYLiSH.dto.product.form.ProductQueryConditionForm;
+import com.maxchauo.STYLiSH.dto.product.dto.ProductResponseDto;
 
 public interface ProductService {
-  ProductResponse findProductByCondition(ProductQueryCondition condition);
+  ProductResponseDto findProductByCondition(ProductQueryConditionForm condition);
 }

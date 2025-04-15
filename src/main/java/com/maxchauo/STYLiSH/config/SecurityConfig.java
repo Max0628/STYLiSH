@@ -15,11 +15,11 @@ public class SecurityConfig {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(
             authorizeRequests ->
-                authorizeRequests
-                    .requestMatchers("/product.html", "js/product.js").permitAll() // allow html can be access
-                    .requestMatchers("/admin/upload").permitAll() // allow form api can go into server.
+                authorizeRequests.requestMatchers("/product.html", "js/product.js").permitAll() // allow html can be access
+                    .requestMatchers("/api/v1/admin/upload").permitAll() // allow form api can go into server.
                     .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll() // allow swagger api
                     .requestMatchers("/api/**").permitAll() // api need to be authenticated
+                    .requestMatchers("/images/**").permitAll() // image url can be access
                     .anyRequest().denyAll());
     return http.build();
   }

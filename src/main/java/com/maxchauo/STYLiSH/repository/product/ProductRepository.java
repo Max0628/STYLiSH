@@ -1,14 +1,14 @@
 package com.maxchauo.STYLiSH.repository.product;
 
 import com.maxchauo.STYLiSH.dto.product.dto.*;
-import com.maxchauo.STYLiSH.dto.product.form.ProductQueryCondition;
+import com.maxchauo.STYLiSH.dto.product.form.ProductQueryConditionForm;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ProductRepository {
   // get productId List.
-  List<ProductDto> findProductByCondition(ProductQueryCondition condition);
+  List<ProductDto> findProductByCondition(ProductQueryConditionForm condition);
 
   // get image map.
   Map<Long, List<String>> findImageUrlById(List<Long> productIds);

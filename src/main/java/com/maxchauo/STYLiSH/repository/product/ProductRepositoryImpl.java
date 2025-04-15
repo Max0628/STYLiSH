@@ -1,9 +1,10 @@
 package com.maxchauo.STYLiSH.repository.product;
 
 import com.maxchauo.STYLiSH.dto.product.dto.*;
-import com.maxchauo.STYLiSH.dto.product.form.ProductQueryCondition;
+import com.maxchauo.STYLiSH.dto.product.form.ProductQueryConditionForm;
 import com.maxchauo.STYLiSH.mapper.*;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
-
+@ToString
 @Log4j2
 @Repository
 @RequiredArgsConstructor
@@ -19,24 +20,41 @@ public class ProductRepositoryImpl implements ProductRepository{
   private final NamedParameterJdbcTemplate template;
 
   @Override
-  public List<ProductDto> findProductByCondition(ProductQueryCondition condition) {
-    String category = condition.getCategory();
-    int paging = condition.getPaging();
-    int pageSize = condition.getPageSize();
-    int offset = paging * pageSize;
+  public List<ProductDto> findProductByCondition(ProductQueryConditionForm condition) {
+    String category = condition.getCategory() != null ?  condition.getCategory().trim() : null;
+    Integer id = condition.getId() != null ? condition.getId() : null;
+    String keyword = condition.getKeyword() != null ? condition.getKeyword().trim() : null;
+    int paging = condition.getPaging() != null ? condition.getPaging() : 0;
+    int pageSize = condition.getPageSize() != null ? condition.getPageSize() : 6;
+    int offset = paging * pageSize ;
     int limit = pageSize + 1;
-    String QUERY_PRODUCT =
+
+    StringBuilder sql = new StringBuilder(
         "SELECT id, category, title, description, price, texture, wash, place, note, story, main_image_url "
             + "FROM `Product` "
-            + "WHERE category =" + "'" + category + "'"
-            + " LIMIT " + limit +  " OFFSET " + offset + " ;";
-    MapSqlParameterSource param = new MapSqlParameterSource()
-            .addValue("category", category)
-            .addValue("limit", limit)
-            .addValue("offset", offset);
+            + "WHERE 1 = 1 ");
+    MapSqlParameterSource param = new MapSqlParameterSource();
+    if(id!=null){
+      sql.append(" AND id = :id");
+      param.addValue("id",id);
+    }
+
+    if(category !=null && !category.isBlank()){
+      sql.append(" AND category = :category");
+      param.addValue("category",category);
+    }
+
+    if(keyword != null && !keyword.isBlank()){
+      sql.append(" AND title LIKE :keyword");
+      param.addValue("keyword","%" + keyword + "%");
+    }
+
+    sql.append(" LIMIT :limit OFFSET :offset");
+    param.addValue("limit", limit);
+    param.addValue("offset", offset);
+    System.out.println("sql: "+sql.toString());
     try {
-      List<ProductDto> data = template.query(QUERY_PRODUCT, param, new ProductRowMapper());
-      return data;
+      return template.query(sql.toString(), param, new ProductRowMapper());
     } catch (Exception e) {
       log.warn("findProductByCondition exception", e);
       return List.of();
