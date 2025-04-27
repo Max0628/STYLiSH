@@ -72,7 +72,7 @@
 
 ### User Table
 ```sql
-CREATE TABLE `User` (
+CREATE TABLE `UserInfo` (
     id BIGINT NOT NULL AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,

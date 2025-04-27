@@ -168,7 +168,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public DataWrapper<UserProfileDto> getUserProfile(String token) {
-    System.out.println("token: " + token);
     if (token == null || token.isBlank()) {
       throw new MissingTokenException("missing token");
     }
