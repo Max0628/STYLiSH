@@ -1,4 +1,48 @@
 # 註冊與登入流程
+### 測試環境
+
+- 本地開發：https://127.0.0.1:8443
+- 生產環境：http://35.74.181.119:8080
+
+### API 文檔
+
+#### 註冊
+
+**端點：** `/api/v1/user/signup`
+
+**請求體：**
+```json
+{
+    "name": "joe",
+    "email": "joe0628@gmail.com",
+    "password": "Joe@@12345678"
+}
+```
+
+#### 登入
+
+**端點：** `/api/v1/user/signin`
+
+**請求體：**
+```json
+{
+  "provider": "native",
+  "email": "joe0628@gmail.com",
+  "password": "MJoe@@12345678"
+}
+```
+
+#### 取得使用者資料
+
+**端點：** `/api/v1/user/profile`
+
+**請求頭：**
+```
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzQ1NzQ4OTU0LCJleHAiOjE3NDU3NTI1NTR9.o0V7h26iMXlYmGE9z-S1gQGxJUVvV9Y7eJPW2TAq27q4LxFGQiFg3ppnL5nxiy8C
+Content-Type: application/json
+```
+```
+
 
 ## 註冊 (Sign Up)
 
@@ -84,3 +128,5 @@ CREATE TABLE `UserInfo` (
 ```
 注意， password 可以是空的(因為fb登入)
 圖片也可以是空的 (因為使用者沒有上傳)
+
+
