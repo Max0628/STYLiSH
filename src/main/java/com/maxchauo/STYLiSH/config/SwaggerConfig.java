@@ -17,19 +17,21 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
 
   @Bean
-  public GroupedOpenApi apiV1(){
-  return GroupedOpenApi.builder()
-          .group("v1")
-          .pathsToMatch("/api/v1/**","/admin/**")
-          .displayName("STYLiSH API v1 - 商品前後台")
-          .build();
+  public GroupedOpenApi frontendApi() {
+    return GroupedOpenApi.builder()
+            .group("frontend")
+            .pathsToMatch("/api/v1/products/**", "/api/v1/user/**")
+            .displayName("STYLiSH API - 前台")
+            .build();
   }
 
   @Bean
-  public GroupedOpenApi apiV2(){
+  public GroupedOpenApi adminApi() {
     return GroupedOpenApi.builder()
-            .group("v2")
-            .pathsToMatch("/api/v2/**")
+            .group("admin")
+            .pathsToMatch("/api/v1/admin/**")
+            .displayName("STYLiSH API - 後台")
             .build();
   }
+
 }

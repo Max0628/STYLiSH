@@ -2,6 +2,7 @@
 ```txt
 swagger
 http://localhost:8080/swagger-ui/index.html -> swagger 文件本地 dashboard
+https://localhost:8443/swagger-ui/index.html -> swagger 文件本地 dashboard
 http://localhost:8080/v3/api-docs           -> swagger 文件打的 api (注意spring security 要打開)
 ---
 ProductList

@@ -1,4 +1,4 @@
-package com.maxchauo.STYLiSH.dto.product.dto;
+package com.maxchauo.STYLiSH.dto.product.dto.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,8 +1,7 @@
 package com.maxchauo.STYLiSH.service.product;
 
-import com.maxchauo.STYLiSH.dto.product.dto.*;
-import com.maxchauo.STYLiSH.dto.product.form.ProductQueryConditionForm;
-import com.maxchauo.STYLiSH.dto.product.dto.ProductResponseDto;
+import com.maxchauo.STYLiSH.dto.product.dto.product.*;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
 import com.maxchauo.STYLiSH.repository.product.ProductRepository;
 import com.maxchauo.STYLiSH.util.CommonUtil;
 import lombok.extern.log4j.Log4j2;
@@ -56,7 +55,7 @@ public class ProductServiceImpl implements ProductService{
       }
 
       Map<Long,ColorDto> colorMap = repo.findColorById(colorIds); // get color & size info.
-      Map<Long,SizeDto> sizeMap = repo.findSizeById(sizeIds);
+      Map<Long, SizeDto> sizeMap = repo.findSizeById(sizeIds);
 
       // extract data finished.
       // starting put data together form ProductDto.

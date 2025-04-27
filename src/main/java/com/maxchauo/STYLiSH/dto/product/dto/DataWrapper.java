@@ -5,11 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class VariantDto {
-  private Long size_id;
-  private Long color_id;
-  private Long product_id;
-  private Long stock;
+@AllArgsConstructor
+public class DataWrapper<T> {
+  private T data;
 }

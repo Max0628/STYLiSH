@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.maxchauo.STYLiSH.dto.product.form.ProductForm;
-import com.maxchauo.STYLiSH.dto.product.form.VariantForm;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ProductForm;
+import com.maxchauo.STYLiSH.dto.product.form.admin.VariantForm;
 import com.maxchauo.STYLiSH.service.admin.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

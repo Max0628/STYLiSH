@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Facebook Login Demo</title>
+</head>
+<body>
+<h2>Facebook 登入範例</h2>
+<button id="facebook-login-btn">使用 Facebook 登入</button>
+<p id="status">尚未登入</p>
+
+<script>
+    /** ========== 1. 初始化 Facebook SDK ========== */
+    function loadFacebookSDKAndInit() {
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: '830456979186955', // ← 替換為你的 App ID
+          cookie: true,
+          xfbml: true,
+          version: 'v15.0'
+        });
+
+        FB.getLoginStatus(function (response) {
+          console.log('初始 FB 登入狀態：', response);
+        });
+      };
+
+      // 載入 SDK Script
+      (function (d, s, id) {
+        if (d.getElementById(id)) return;
+        const js = d.createElement(s);
+        js.id = id;
+        js.src = 'https://connect.facebook.net/en_US/sdk.js';
+        const fjs = d.getElementsByTagName(s)[0];
+        fjs.parentNode.insertBefore(js, fjs);
+      })(document, 'script', 'facebook-jssdk');
+    }
+
+    /** ========== 2. 使用者點擊登入按鈕 ========== */
+    function onFacebookLoginClicked() {
+      FB.login(function (response) {
+        if (response.status === 'connected') {
+          const accessToken = response.authResponse.accessToken;
+          console.log('取得的 access_token：', accessToken);
+          updateStatus('登入成功，取得 access_token 中...');
+          getFacebookProfileAndSendToBackend(accessToken);
+        } else {
+          updateStatus('使用者取消登入或未授權');
+        }
+      }, { scope: 'public_profile,email' });
+    }
+
+    /** ========== 3. 從 Facebook API 拿使用者資料 ========== */
+    function getFacebookProfileAndSendToBackend(accessToken) {
+      FB.api('/me', { fields: 'name,email' }, function (userData) {
+        console.log('Facebook 使用者資料：', userData);
+        sendAccessTokenToServer(accessToken);
+      });
+    }
+
+    /** ========== 4. 傳送 access_token 到後端 ========== */
+    function sendAccessTokenToServer(accessToken) {
+      fetch('/api/v1/user/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          provider: 'facebook',
+          access_token: accessToken
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('後端回應：', data);
+        localStorage.setItem('jwt', data.data.access_token);
+        alert('登入成功！JWT 已儲存');
+      })
+      .catch(error => {
+        console.error('送出 access_token 失敗：', error);
+        alert('後端驗證失敗');
+      });
+    }
+
+    /** ========== 5. 更新畫面狀態 ========== */
+    function updateStatus(message) {
+      document.getElementById('status').innerText = message;
+    }
+
+    /** ========== 6. 綁定事件並初始化 SDK ========== */
+    function initializeApp() {
+      document.getElementById('facebook-login-btn')
+              .addEventListener('click', onFacebookLoginClicked);
+      loadFacebookSDKAndInit();
+    }
+
+    initializeApp(); //入口點
+</script>
+</body>
+</html>

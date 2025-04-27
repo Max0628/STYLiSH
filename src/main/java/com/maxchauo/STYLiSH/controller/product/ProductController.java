@@ -1,7 +1,7 @@
 package com.maxchauo.STYLiSH.controller.product;
 
-import com.maxchauo.STYLiSH.dto.product.form.ProductQueryConditionForm;
-import com.maxchauo.STYLiSH.dto.product.dto.ProductResponseDto;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
+import com.maxchauo.STYLiSH.dto.product.dto.product.ProductResponseDto;
 import com.maxchauo.STYLiSH.service.product.ProductService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +43,7 @@ public class ProductController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("details")
+  @GetMapping("/details")
   public ResponseEntity<ProductResponseDto> searchProductDetail(
       @RequestParam(required = true) Integer id,
       @RequestParam(defaultValue = "0") int paging,

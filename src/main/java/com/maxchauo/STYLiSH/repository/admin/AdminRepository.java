@@ -1,8 +1,8 @@
 package com.maxchauo.STYLiSH.repository.admin;
 
-import com.maxchauo.STYLiSH.dto.product.form.ColorForm;
-import com.maxchauo.STYLiSH.dto.product.form.SizeFrom;
-import com.maxchauo.STYLiSH.dto.product.form.ProductForm;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ColorForm;
+import com.maxchauo.STYLiSH.dto.product.form.admin.SizeFrom;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ProductForm;
 import com.maxchauo.STYLiSH.exception.DatabaseOperationException;
 import com.maxchauo.STYLiSH.exception.ProductInsertionException;
 import com.maxchauo.STYLiSH.exception.SystemException;
@@ -58,10 +58,10 @@ public class AdminRepository {
       }
     } catch (DatabaseOperationException e) {
       log.error("資料庫插入商品時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入商品時發生錯誤", e);
+      throw new DatabaseOperationException("資料庫插入商品時發生錯誤");
     } catch (Exception e) {
       log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤", e);
+      throw new SystemException("發生未知錯誤");
     }
   }
 
@@ -85,10 +85,10 @@ public class AdminRepository {
       }
     } catch (DatabaseOperationException e) {
       log.error("資料庫插入顏色時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入顏色時發生錯誤", e);
+      throw new DatabaseOperationException("資料庫插入顏色時發生錯誤");
     } catch (Exception e) {
       log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤", e);
+      throw new SystemException("發生未知錯誤");
     }
   }
 
@@ -115,10 +115,10 @@ public class AdminRepository {
       }
     } catch (DataAccessException e) {
       log.error("資料庫插入尺寸時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入尺寸時發生錯誤", e);
+      throw new DatabaseOperationException("資料庫插入尺寸時發生錯誤");
     } catch (Exception e) {
       log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤", e);
+      throw new SystemException("發生未知錯誤");
     }
   }
 
@@ -147,10 +147,10 @@ public class AdminRepository {
       }else return true;
     } catch (DataAccessException e) {
       log.error("資料庫插入變體時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入變體時發生錯誤", e);
+      throw new DatabaseOperationException("資料庫插入變體時發生錯誤");
     } catch (Exception e) {
       log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤", e);
+      throw new SystemException("發生未知錯誤");
     }
   }
 
@@ -180,7 +180,7 @@ public class AdminRepository {
 
     } catch (Exception e) {
       log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤", e);
+      throw new SystemException("發生未知錯誤");
     }
     return 0;
   }

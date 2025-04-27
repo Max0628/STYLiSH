@@ -15,7 +15,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ImgUtil {
-  @Value("${upload.path}") // 抓取 前儲存檔案的資料夾路徑
+  @Value("${upload.path}")
   private String uploadPngDirectory;
 
   /**

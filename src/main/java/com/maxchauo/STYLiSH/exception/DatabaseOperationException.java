@@ -1,7 +1,7 @@
 package com.maxchauo.STYLiSH.exception;
 
-public class DatabaseOperationException extends RuntimeException{
-  public DatabaseOperationException(String message, Throwable cause){
-    super(message, cause);
+public class DatabaseOperationException extends BaseException {
+  public DatabaseOperationException(String message) {
+    super(message, 500);
   }
 }

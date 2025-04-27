@@ -1,6 +1,6 @@
-package com.maxchauo.STYLiSH.mapper;
+package com.maxchauo.STYLiSH.mapper.product;
 
-import com.maxchauo.STYLiSH.dto.product.dto.ProductDto;
+import com.maxchauo.STYLiSH.dto.product.dto.product.ProductDto;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package com.maxchauo.STYLiSH.dto.product.dto;
+package com.maxchauo.STYLiSH.dto.product.form.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageDto {
-  private String url;
-  private Long productId;
+public class SizeFrom {
+  private String size;
 }

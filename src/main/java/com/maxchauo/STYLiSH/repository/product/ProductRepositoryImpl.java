@@ -1,8 +1,8 @@
 package com.maxchauo.STYLiSH.repository.product;
 
-import com.maxchauo.STYLiSH.dto.product.dto.*;
-import com.maxchauo.STYLiSH.dto.product.form.ProductQueryConditionForm;
-import com.maxchauo.STYLiSH.mapper.*;
+import com.maxchauo.STYLiSH.dto.product.dto.product.*;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
+import com.maxchauo.STYLiSH.mapper.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -105,7 +105,7 @@ public class ProductRepositoryImpl implements ProductRepository{
   }
 
   @Override
-  public Map<Long,ColorDto> findColorById(List<Long> colorIds) {
+  public Map<Long, ColorDto> findColorById(List<Long> colorIds) {
     String QUERY_COLOR = "SELECT id, code, name FROM `Color` WHERE id IN (:colorIds)";
     MapSqlParameterSource param = new MapSqlParameterSource().addValue("colorIds", colorIds);
     try {

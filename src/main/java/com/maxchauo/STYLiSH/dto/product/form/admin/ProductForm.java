@@ -1,4 +1,4 @@
-package com.maxchauo.STYLiSH.dto.product.form;
+package com.maxchauo.STYLiSH.dto.product.form.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

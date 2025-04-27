@@ -1,9 +1,10 @@
 package com.maxchauo.STYLiSH.service.admin;
 
-import com.maxchauo.STYLiSH.dto.product.form.ColorForm;
-import com.maxchauo.STYLiSH.dto.product.form.SizeFrom;
-import com.maxchauo.STYLiSH.dto.product.form.ProductForm;
-import com.maxchauo.STYLiSH.dto.product.form.VariantForm;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ColorForm;
+import com.maxchauo.STYLiSH.dto.product.form.admin.SizeFrom;
+import com.maxchauo.STYLiSH.dto.product.form.admin.ProductForm;
+import com.maxchauo.STYLiSH.dto.product.form.admin.VariantForm;
+import com.maxchauo.STYLiSH.exception.UserClientException;
 import com.maxchauo.STYLiSH.repository.admin.AdminRepository;
 import com.maxchauo.STYLiSH.util.CommonUtil;
 import com.maxchauo.STYLiSH.util.ImgUtil;
@@ -27,7 +28,7 @@ public class AdminService {
   public boolean insertProduct(ProductForm product, MultipartFile mainImage, List<MultipartFile> images, List<VariantForm> variants) {
 
     if (!CommonUtil.isNotEmpty(product) || !CommonUtil.isNotEmpty(mainImage) || !CommonUtil.isNotEmpty(images) || !CommonUtil.isNotEmpty(variants)) {
-      throw new IllegalArgumentException("參數不得為空");
+      throw new UserClientException("參數不得為空");
     }
 
     String mainImageName = imgUtil.saveImage(mainImage);

@@ -20,13 +20,11 @@ public class CommonUtil {
   public static boolean isNotEmpty(Object dto) {
     if (dto == null) return false;
 
-    // 基本型別先判斷，避免對系統類別做反射
     if (dto instanceof String str) return !str.isBlank();
     if (dto instanceof Number) return true;
     if (dto instanceof Collection<?> collection) return !collection.isEmpty();
     if (dto instanceof Map<?, ?> map) return !map.isEmpty();
 
-    // 只針對自定義物件使用反射
     for (Field field : dto.getClass().getDeclaredFields()) {
       try {
         if (!field.canAccess(dto)) {
@@ -34,7 +32,7 @@ public class CommonUtil {
         }
 
         Object value = field.get(dto);
-        if (isNotEmpty(value)) { // 巢狀遞迴檢查
+        if (isNotEmpty(value)) {
           return true;
         }
 
@@ -49,14 +47,24 @@ public class CommonUtil {
 
   public static String buildFullImageUrl(String domain, String urlPath, String filename) {
     if (filename == null || filename.isBlank() || filename.startsWith("http")) {
-      return filename; // if is null, return null.
+      return filename;
     }
 
-    // 整理參數避免重複 "/"
     if (domain.endsWith("/")) domain = domain.substring(0, domain.length() - 1);
     if (urlPath.startsWith("/")) urlPath = urlPath.substring(1);
     if (urlPath.endsWith("/")) urlPath = urlPath.substring(0, urlPath.length() - 1);
 
     return domain + "/" + urlPath + "/" + filename;
+  }
+
+  public static boolean isValidPassword(String password){
+    if(password ==null || password.length() <8){
+      return false;
+    }
+    boolean hasUpper = password.matches(".*[A-Z].*");
+    boolean hasLower = password.matches(".*[a-z].*");
+    boolean hasDigit = password.matches(".*[0-9].*");
+    boolean hasSpecial = password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?].*");
+    return hasUpper && hasLower && hasDigit && hasSpecial;
   }
 }
