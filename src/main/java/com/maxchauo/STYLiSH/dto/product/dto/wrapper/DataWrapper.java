@@ -1,4 +1,4 @@
-package com.maxchauo.STYLiSH.dto.product.dto;
+package com.maxchauo.STYLiSH.dto.product.dto.wrapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

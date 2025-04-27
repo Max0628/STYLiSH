@@ -33,9 +33,10 @@ public class SecurityConfig {
         .authorizeHttpRequests(//FilterSecurityInterceptor
             authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/product.html", "/js/product.js", "/auth.html").permitAll()
+                    .requestMatchers("/product.html", "/js/product.js", "/auth.html", "/campaign.html").permitAll()
                     .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/api/v1/user/signin", "/api/v1/user/signup").permitAll()
+                    .requestMatchers("/api/v1/products/getAllProductIdAndTitle","/api/v1/products/insertCampaignProduct").permitAll()
                     .requestMatchers("/api/v1/products/**", "/api/v1/marketing/**").permitAll()
                     .requestMatchers("/images/**").permitAll().anyRequest().authenticated());
     http.addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);// add new custom filter

@@ -58,8 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private boolean isPublicEndpoint(String uri) {//can be accessed without authentication
     return uri.startsWith("/product.html") ||
-            uri.startsWith("/js/product.js") ||
             uri.startsWith("/auth.html") ||
+            uri.startsWith("/campaign.html") ||
+            uri.startsWith("/js/product.js") ||
             uri.startsWith("/swagger-ui") ||
             uri.startsWith("/v3/api-docs") ||
             uri.startsWith("/api/v1/user/signin") ||

@@ -1,9 +1,14 @@
 package com.maxchauo.STYLiSH.service.product;
 
+import com.maxchauo.STYLiSH.dto.product.dto.ApiResponse;
+import com.maxchauo.STYLiSH.dto.product.dto.wrapper.DataWrapper;
 import com.maxchauo.STYLiSH.dto.product.dto.product.*;
+import com.maxchauo.STYLiSH.dto.product.form.admin.CampaignForm;
 import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
+import com.maxchauo.STYLiSH.exception.UserClientException;
 import com.maxchauo.STYLiSH.repository.product.ProductRepository;
 import com.maxchauo.STYLiSH.util.CommonUtil;
+import com.maxchauo.STYLiSH.util.ImgUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,15 +17,19 @@ import java.util.*;
 @Log4j2
 @Service
 public class ProductServiceImpl implements ProductService{
-  private  final  ProductRepository repo;
+
   @Value("${upload.domain}")
   private String domain;
 
   @Value("${upload.url-path}")
   private  String urlpath;
 
-  public ProductServiceImpl(ProductRepository repo) {
+  private final ImgUtil imgUtil;
+  private  final  ProductRepository repo;
+
+  public ProductServiceImpl(ProductRepository repo, ImgUtil imgUtil) {
     this.repo = repo;
+    this.imgUtil = imgUtil;
   }
 
   @Override

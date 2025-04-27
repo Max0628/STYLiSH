@@ -1,7 +1,7 @@
 package com.maxchauo.STYLiSH.service.user;
 
-import com.maxchauo.STYLiSH.dto.product.dto.*;
 import com.maxchauo.STYLiSH.dto.product.dto.auth.*;
+import com.maxchauo.STYLiSH.dto.product.dto.wrapper.DataWrapper;
 import com.maxchauo.STYLiSH.dto.product.form.auth.SignInForm;
 import com.maxchauo.STYLiSH.dto.product.form.auth.SignUpForm;
 import com.maxchauo.STYLiSH.exception.AuthorizationException;

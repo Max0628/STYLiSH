@@ -2,6 +2,7 @@ package com.maxchauo.STYLiSH.repository.user;
 
 import com.maxchauo.STYLiSH.dto.product.dto.auth.UserDto;
 import com.maxchauo.STYLiSH.dto.product.dto.auth.UserProfileDto;
+import com.maxchauo.STYLiSH.dto.product.dto.product.ProductResponseDto;
 import com.maxchauo.STYLiSH.dto.product.form.auth.SignUpForm;
 
 

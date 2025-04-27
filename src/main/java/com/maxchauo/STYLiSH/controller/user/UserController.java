@@ -1,6 +1,6 @@
 package com.maxchauo.STYLiSH.controller.user;
 
-import com.maxchauo.STYLiSH.dto.product.dto.DataWrapper;
+import com.maxchauo.STYLiSH.dto.product.dto.wrapper.DataWrapper;
 import com.maxchauo.STYLiSH.dto.product.dto.auth.AuthResponseDto;
 import com.maxchauo.STYLiSH.dto.product.dto.auth.UserProfileDto;
 import com.maxchauo.STYLiSH.dto.product.form.auth.SignInForm;

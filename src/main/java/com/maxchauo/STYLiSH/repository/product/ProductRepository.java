@@ -1,9 +1,7 @@
 package com.maxchauo.STYLiSH.repository.product;
 
-import com.maxchauo.STYLiSH.dto.product.dto.product.ColorDto;
-import com.maxchauo.STYLiSH.dto.product.dto.product.ProductDto;
-import com.maxchauo.STYLiSH.dto.product.dto.product.SizeDto;
-import com.maxchauo.STYLiSH.dto.product.dto.product.VariantDto;
+import com.maxchauo.STYLiSH.dto.product.dto.product.*;
+import com.maxchauo.STYLiSH.dto.product.form.admin.CampaignForm;
 import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
 
 import java.util.List;

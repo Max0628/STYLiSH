@@ -1,11 +1,20 @@
 package com.maxchauo.STYLiSH.controller.product;
 
+import com.maxchauo.STYLiSH.dto.product.dto.ApiResponse;
+import com.maxchauo.STYLiSH.dto.product.dto.wrapper.CampaignFormWrapper;
+import com.maxchauo.STYLiSH.dto.product.dto.wrapper.DataWrapper;
+import com.maxchauo.STYLiSH.dto.product.dto.product.CampaignDto;
 import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
 import com.maxchauo.STYLiSH.dto.product.dto.product.ProductResponseDto;
+import com.maxchauo.STYLiSH.exception.UserClientException;
 import com.maxchauo.STYLiSH.service.product.ProductService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @Log4j2
 @RestController
@@ -22,6 +31,10 @@ public class ProductController {
       @PathVariable String category,
       @RequestParam(defaultValue = "0") int paging,
       @RequestParam(defaultValue = "6") int pageSize) {
+    Set<String> allowedCategories = Set.of("all", "women", "men", "accessories");
+    if (!allowedCategories.contains(category)) {
+      throw new UserClientException("Invalid category");
+    }
     ProductQueryConditionForm condition = new ProductQueryConditionForm();
     condition.setCategory(category);
     condition.setPaging(paging);
