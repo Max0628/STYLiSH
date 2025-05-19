@@ -38,7 +38,7 @@ CREATE TABLE `Campaign` (
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `campaign_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `Product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,6 +47,7 @@ CREATE TABLE `Campaign` (
 
 LOCK TABLES `Campaign` WRITE;
 /*!40000 ALTER TABLE `Campaign` DISABLE KEYS */;
+INSERT INTO `Campaign` VALUES (3,12,'e1f5f15d-e640-4a60-b6f0-29b5b275a7bc_201807202140_keyvisual.jpg','文案文案文案1'),(4,13,'971ae7f6-7e64-4248-9949-814c7f2f8235_201807242222_keyvisual.jpg','文案文案文案2'),(5,14,'93280817-3fb0-4dca-81a4-3376b59ba36e_201807242228_keyvisual.jpg','文案文案文案3'),(6,15,'e38b9d0f-7bb5-4f07-bd24-27618749b647_201807202140_keyvisual.jpg','文案文案文案4'),(7,18,'e1cb6c37-f2ad-4a72-87b9-6363a5026f4b_201807242222_keyvisual.jpg','文案文案文案5'),(8,19,'bf5caa72-c467-400d-b6aa-2aaa7b05932e_201807242228_keyvisual.jpg','文案文案文案6'),(9,20,'0ae6ec3d-8a78-48c7-8764-bd446c2d465b_201807202140_keyvisual.jpg','文案文案文案7'),(10,21,'d84098dc-2d95-4141-a4d7-a631957a9e89_201807242222_keyvisual.jpg','文案文案文案8'),(11,22,'850706fd-c6f6-4c1f-a07d-5c9c81a7c177_201807242228_keyvisual.jpg','文案文案文案9'),(12,23,'65b47ae4-adb5-4cb8-921f-6b3996c7f994_201807202140_keyvisual.jpg','文案文案文案10'),(13,24,'d4bce906-c408-497f-aff5-f1766f25e5b4_201807242222_keyvisual.jpg','文案文案文案11'),(14,25,'5ec8e2e0-fcaf-4949-ab8f-b36a4800f552_201807242228_keyvisual.jpg','文案文案文案12'),(15,26,'bf2ecd42-7d7f-4268-bd3e-43d79ecc9589_201807202140_keyvisual.jpg','文案文案文案13'),(16,27,'e152d4df-dfbe-47e3-a655-b14fcb153b7a_201807242222_keyvisual.jpg','文案文案文案14'),(17,28,'d82ae5ac-bd21-401c-a4ae-464059c09845_201807242228_keyvisual.jpg','文案文案文案15'),(18,32,'27498ece-e095-408a-88a3-70da08137aaf_201807202140_keyvisual.jpg','文案文案文案16');
 /*!40000 ALTER TABLE `Campaign` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,7 +180,7 @@ CREATE TABLE `UserInfo` (
   `picture` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,6 +189,7 @@ CREATE TABLE `UserInfo` (
 
 LOCK TABLES `UserInfo` WRITE;
 /*!40000 ALTER TABLE `UserInfo` DISABLE KEYS */;
+INSERT INTO `UserInfo` VALUES (3,'邱大恕','maxchauo0628@gmail.com',NULL,'facebook','https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=4095871230640126&height=200&width=200&ext=1750251191&hash=AT-83RECpuhDSuRZo0y8vvU7');
 /*!40000 ALTER TABLE `UserInfo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,4 +234,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-19 20:37:27
+-- Dump completed on 2025-05-19 21:11:31
