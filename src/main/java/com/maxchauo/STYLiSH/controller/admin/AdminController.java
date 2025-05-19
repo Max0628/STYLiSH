@@ -18,7 +18,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * 處理與後台相關的 request
+ * handle admin backend related request
  * @author tashuchiu
  */
 @RestController
@@ -30,20 +30,21 @@ public class AdminController {
   private final AdminService adminService;
 
   /**
-   * 上傳商品資料至後端系統
-   * @param category 商品類別 ex:'men','women','grocery'
-   * @param title 商品標題 ex: '前開衩扭結洋裝'
-   * @param description 商品明細 ex: '厚薄：高抗寒素材選用，保暖也時尚有型'
-   * @param price 商品價錢 ex: '2200'
-   * @param texture 商品材質 ex: '棉、聚脂纖維'
-   * @param wash 清洗方法 ex: '手洗（水溫40度'
-   * @param place 商品產地 ex: '韓國'
-   * @param note 商品備註 ex: '實品顏色以單品照為主'
-   * @param story 商品故事 ex: '你絕對不能錯過的超值商品'
-   * @param variant 商品變體 JSON 字串
-   * @param mainImage 主圖片(MultipartFile) ex: 'https://stylish.com/main.jpg'
-   * @param images 子圖片(MultipartFile) ex:['https://stylish.com/0.jpg','https://stylish.com/1.jpg','https://stylish.com/2.jpg']
-   * @return 回傳 JSON 物件，表示新增成功或失敗
+   * Upload product data to the backend system.
+   *
+   * @param category Product category, ex: '男','女','雜貨'
+   * @param title Product title, ex: '前開衩扭結洋裝'
+   * @param description Product description, ex: '厚薄：高抗寒素材選用，保暖也時尚有型'
+   * @param price Product price, ex: '2200'
+   * @param texture Product material, ex: '棉、聚脂纖維'
+   * @param wash Washing instructions, ex: '手洗（水溫40度）'
+   * @param place Place of origin, ex: '韓國'
+   * @param note Product notes, ex: '實品顏色以單品照為主'
+   * @param story Product story, ex: '你絕對不能錯過的超值商品'
+   * @param variant Product variants as a JSON string
+   * @param mainImage Main image (MultipartFile), ex: 'https://stylish.com/main.jpg'
+   * @param images Additional images (MultipartFile list), ex: ['https://stylish.com/0.jpg', 'https://stylish.com/1.jpg', 'https://stylish.com/2.jpg']
+   * @return Returns a JSON object indicating whether the upload was successful or failed
    */
   @PostMapping("/upload")
   public ResponseEntity<Map<String, Object>> insertProduct(
@@ -60,8 +61,6 @@ public class AdminController {
       @RequestParam("variant") String variant,
       @RequestPart(value = "images[]", required = true) List<MultipartFile> images) {
     try {
-
-      // 取出變體
       ProductForm product = new ProductForm();
       product.setCategory(category);
       product.setTitle(title);
@@ -73,23 +72,22 @@ public class AdminController {
       product.setStory(story);
       product.setNote(note);
       List<VariantForm> variants = objectMapper.readValue(variant, new TypeReference<List<VariantForm>>() {});
-
       boolean insertSuccess = adminService.insertProduct(product, mainImage, images, variants);
       if(insertSuccess){
         Map<String, Object> returnMap = new HashMap<>();
         returnMap.put("statusCode", "201");
-        returnMap.put("response", "商品上傳成功");
+        returnMap.put("response", "upload product success");
         return new ResponseEntity<>(returnMap, HttpStatus.CREATED);
       }
     } catch (Exception e) {
       Map<String, Object> failMap = new HashMap<>();
       failMap.put("statusCode", "400");
-      failMap.put("response", "商品上傳失敗，您填寫的表單資訊有誤");
+      failMap.put("response", "upload product fail, something wrong in your form");
       return new ResponseEntity<>(failMap, HttpStatus.BAD_REQUEST);
     }
     Map<String, Object> errorMap = new HashMap<>();
     errorMap.put("statusCode", "500");
-    errorMap.put("response", "商品上傳失敗，請聯絡管理員");
+    errorMap.put("response", "upload product fail, please contact to IT team.");
     return new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
   }
 }

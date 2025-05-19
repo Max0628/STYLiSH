@@ -33,9 +33,9 @@ public class SecurityConfig {
         .authorizeHttpRequests(//FilterSecurityInterceptor
             authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/admin/product.html", "/js/product.js", "/admin/auth.html", "/admin/campaign.html").permitAll()
+                    .requestMatchers("/admin/product.html", "/js/product.js", "/admin/auth.html", "/admin/campaign.html","/admin/checkout.html").permitAll()
                     .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                    .requestMatchers("/api/v1/user/signin", "/api/v1/user/signup").permitAll()
+                    .requestMatchers("/api/v1/user/signin", "/api/v1/user/signup", "/api/v1/admin/upload").permitAll()
                     .requestMatchers("/api/v1/products/getAllProductIdAndTitle","/api/v1/products/insertCampaignProduct").permitAll()
                     .requestMatchers("/api/v1/products/**", "/api/v1/marketing/**").permitAll()
                     .requestMatchers("/images/**").permitAll().anyRequest().authenticated());

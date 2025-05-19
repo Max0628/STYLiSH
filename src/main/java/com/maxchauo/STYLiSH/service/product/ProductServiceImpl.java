@@ -84,7 +84,7 @@ public class ProductServiceImpl implements ProductService{
         dto.setMainImage(CommonUtil.buildFullImageUrl(domain, urlpath, p.getMainImage()));
         List<String> fullImageUrls = new ArrayList<>();
         for (String img : imageMap.getOrDefault(pid, List.of())) {
-          fullImageUrls.add(CommonUtil.buildFullImageUrl(domain, urlpath, img));
+            fullImageUrls.add(CommonUtil.buildFullImageUrl(domain, urlpath, img));
         }
         dto.setImages(fullImageUrls);
 

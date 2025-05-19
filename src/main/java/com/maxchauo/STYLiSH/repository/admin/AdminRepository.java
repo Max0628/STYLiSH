@@ -22,12 +22,11 @@ import java.util.Map;
 
 @Log4j2
 @Repository
-@RequiredArgsConstructor // 使用 constructor injection 實現 DI
+@RequiredArgsConstructor // constructor injection
 public class AdminRepository {
 
   private final NamedParameterJdbcTemplate template;
 
-  /** 插入商品文字欄位，返回 productId */
   public long insertProduct(ProductForm productForm) {
     final String INSERT_PRODUCT_SQL =
         "INSERT INTO `Product`(category, title, description, price, texture, wash, place, note, story, main_image_url)"
@@ -48,24 +47,23 @@ public class AdminRepository {
     try {
       int rowsAffected = template.update(INSERT_PRODUCT_SQL, param, keyHolder);
       if (rowsAffected == 0) {
-        throw new ProductInsertionException("產品插入失敗，影響行數為0");
+        throw new ProductInsertionException("insert product failed, affected rows = 0");
       }
       Number productId = keyHolder.getKey();
       if (productId != null) {
         return productId.longValue();
       } else {
-        throw new ProductInsertionException("產品插入失敗，未取得 productId");
+        throw new ProductInsertionException("insert product failed, no productId");
       }
     } catch (DatabaseOperationException e) {
-      log.error("資料庫插入商品時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入商品時發生錯誤");
+      log.error("insert product to db failed: {}", e.getMessage(), e);
+      throw new DatabaseOperationException("insert product to db failed");
     } catch (Exception e) {
-      log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤");
+      log.error("unexcepted error: {}", e.getMessage(), e);
+      throw new SystemException("unexcepted error");
     }
   }
 
-  /** 插入商品顏色欄位，返回 colorId */
   public long insertColor(ColorForm colorDto) {
     String INSERT_COLOR_SQL = "INSERT INTO `Color`(code, name) VALUES(:code, :name)";
     MapSqlParameterSource param = new MapSqlParameterSource()
@@ -75,25 +73,25 @@ public class AdminRepository {
     try {
       int rowsAffected = template.update(INSERT_COLOR_SQL, param, keyHolder);
       if (rowsAffected == 0) {
-        throw new ProductInsertionException("插入顏色失敗，影響行數為0");
+        throw new ProductInsertionException("failed to insert color, affected rows = 0");
       }
       Number colorId = keyHolder.getKey();
       if (colorId != null) {
         return (colorId.longValue());
       } else {
-        throw new ProductInsertionException("顏色插入失敗，未取得colorId");
+        throw new ProductInsertionException("failed to insert color, no colorId");
       }
     } catch (DatabaseOperationException e) {
-      log.error("資料庫插入顏色時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入顏色時發生錯誤");
+      log.error("insert color to db fail: {}", e.getMessage(), e);
+      throw new DatabaseOperationException("insert color to db fail");
     } catch (Exception e) {
-      log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤");
+      log.error("unexcepted error: {}", e.getMessage(), e);
+      throw new SystemException("unexcepted error");
     }
   }
 
   /**
-   * 插入商品尺寸欄位，反回 sizeId
+   * insets size to db
    *
    * @return sizeId {BigInt}
    * @auther tashuchiu
@@ -105,25 +103,25 @@ public class AdminRepository {
     try {
       int rowAffected = template.update(SIZE_INSERT_SQL, param, keyHolder);
       if (rowAffected == 0) {
-        throw new ProductInsertionException("插入尺寸失敗，影響行數為0");
+        throw new ProductInsertionException("insert size failed, affected rows = 0");
       }
       Number sizeId = keyHolder.getKey();
       if (sizeId != null) {
         return sizeId.longValue();
       } else {
-        throw new RuntimeException("尺寸插入失敗，未取得colorId");
+        throw new RuntimeException("insert size failed, no sizeId");
       }
     } catch (DataAccessException e) {
-      log.error("資料庫插入尺寸時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入尺寸時發生錯誤");
+      log.error("fail to insert size to db: {}", e.getMessage(), e);
+      throw new DatabaseOperationException("fail to insert size to db");
     } catch (Exception e) {
-      log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤");
+      log.error("unexcepted error: {}", e.getMessage(), e);
+      throw new SystemException("unexcepted error");
     }
   }
 
   /***
-   * 取得 productId, colorId, sizeId,插入 variant table
+   * get productId, colorId, sizeId,insert variant table
    * @param productId
    * @param colorId
    * @param sizeId
@@ -132,7 +130,6 @@ public class AdminRepository {
    * @author tashuchiu
    */
   public boolean insertVariant(long productId, long colorId, long sizeId, long stock) {
-//    String stock = variantDto.getStock();
     String INSERT_VARIANT_SQL =
         "INSERT INTO `Variant`(size_id, color_id, product_id, stock) VALUES(:sizeId, :colorId, :productId, :stock)";
     MapSqlParameterSource param = new MapSqlParameterSource()
@@ -143,25 +140,25 @@ public class AdminRepository {
     try {
       int rowAffected = template.update(INSERT_VARIANT_SQL, param);
       if (rowAffected == 0) {
-        throw new ProductInsertionException("變體插入失敗，未取得colorId");
+        throw new ProductInsertionException("failed to insert variant, affected rows = 0");
       }else return true;
     } catch (DataAccessException e) {
-      log.error("資料庫插入變體時發生錯誤: {}", e.getMessage(), e);
-      throw new DatabaseOperationException("資料庫插入變體時發生錯誤");
+      log.error("insert variant to db fail: {}", e.getMessage(), e);
+      throw new DatabaseOperationException("insert variant to db fail");
     } catch (Exception e) {
-      log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤");
+      log.error("unexcepted error: {}", e.getMessage(), e);
+      throw new SystemException("unexcepted error");
     }
   }
 
   public int insertImage(List<String> imagesUrl, long productId) {
     String INSERT_IMAGES_SQL = " INSERT INTO `Image`(url,product_id) VALUES(:url,:productId)";
-    List<Map<String, Object>> arrayListMap = new ArrayList<Map<String, Object>>(); // 用 arrayList 動態插入的特性來插入
+    List<Map<String, Object>> arrayListMap = new ArrayList<Map<String, Object>>();
     for (String imageUrl : imagesUrl) {
       Map<String, Object> paramMap = new HashMap<>();
       paramMap.put("productId", productId);
       paramMap.put("url", imageUrl);
-      arrayListMap.add(paramMap); // 把該次的 map 放到 arraylist 中
+      arrayListMap.add(paramMap);
     }
     Map<String, Object>[] batchArray = arrayListMap.toArray(new Map[0]);
     try {
@@ -172,15 +169,15 @@ public class AdminRepository {
       }
 
       if (totalInserted == 0) {
-        throw new ProductInsertionException("圖片插入失敗，影響筆數為 0");
+        throw new ProductInsertionException("failed to insert images, affected rows = 0");
       }
       return totalInserted;
     } catch (DataAccessException e) {
-      log.error("資料庫插入圖片時發生錯誤: {}", e.getMessage(), e);
+      log.error("fail to insert images to db: {}", e.getMessage(), e);
 
     } catch (Exception e) {
-      log.error("發生未知錯誤: {}", e.getMessage(), e);
-      throw new SystemException("發生未知錯誤");
+      log.error("unexpected error: {}", e.getMessage(), e);
+      throw new SystemException("unexpected error");
     }
     return 0;
   }

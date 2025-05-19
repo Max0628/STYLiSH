@@ -73,7 +73,7 @@
       .then(response => response.json())
       .then(data => {
         console.log('後端回應：', data);
-        localStorage.setItem('jwt', data.data.access_token);
+        localStorage.setItem('token', data.data.access_token);
         alert('登入成功！JWT 已儲存');
       })
       .catch(error => {

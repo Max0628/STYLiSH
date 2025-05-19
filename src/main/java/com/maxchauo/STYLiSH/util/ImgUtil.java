@@ -19,7 +19,7 @@ public class ImgUtil {
   private String uploadPngDirectory;
 
   /**
-   * 單張圖片解析出圖片名稱，二進位資料
+   * parse multipart file to image url
    *
    * @param image
    * @return
@@ -39,10 +39,10 @@ public class ImgUtil {
   }
 
   /**
-   * 傳入多張商品副圖片 MultipartFile 檔案，回傳 商品副圖片可訪問之 url List 用於插入資料庫
+   * parse multipart file list to image url list
    *
-   * @param images 商品多張副圖片 MultipartFile 格式
-   * @return 可訪問的副圖片 url List，用於插入資料庫
+   * @param images multipart file list
+   * @return image url list
    */
   public List<String> saveImages(List<MultipartFile> images) {
     try {

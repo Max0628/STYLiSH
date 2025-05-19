@@ -60,9 +60,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     return uri.startsWith("/admin/product.html") ||
             uri.startsWith("/admin/auth.html") ||
             uri.startsWith("/admin/campaign.html") ||
+            uri.startsWith("/admin/checkout.html") ||
             uri.startsWith("/js/product.js") ||
             uri.startsWith("/swagger-ui") ||
             uri.startsWith("/v3/api-docs") ||
+            uri.startsWith("/api/v1/admin/upload") ||
             uri.startsWith("/api/v1/user/signin") ||
             uri.startsWith("/api/v1/user/signup") ||
             uri.startsWith("/api/v1/products") ||

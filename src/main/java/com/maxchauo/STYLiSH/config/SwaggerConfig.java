@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
         info = @Info(
                 title = "STYLiSH API",
                 version = "1.0.0",
-                description = "STYLiSH 商品平台 API 文件"
+                description = "STYLiSH API docs"
         )
 )
 @Configuration
@@ -21,7 +21,7 @@ public class SwaggerConfig {
     return GroupedOpenApi.builder()
             .group("frontend")
             .pathsToMatch("/api/v1/products/**", "/api/v1/user/**")
-            .displayName("STYLiSH API - 前台")
+            .displayName("STYLiSH API - frontend")
             .build();
   }
 
@@ -30,7 +30,7 @@ public class SwaggerConfig {
     return GroupedOpenApi.builder()
             .group("admin")
             .pathsToMatch("/api/v1/admin/**")
-            .displayName("STYLiSH API - 後台")
+            .displayName("STYLiSH API - backend")
             .build();
   }
 

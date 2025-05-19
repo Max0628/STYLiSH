@@ -12,10 +12,10 @@ import java.util.Map;
 public class CommonUtil {
 
   /**
-   * 檢查傳入物件是否「有任何欄位」不為 null / 空
+   * inspect the object and check if it is empty
    *
    * @param dto
-   * @return 若非空則為 true
+   * @return return true if the object is not empty
    */
   public static boolean isNotEmpty(Object dto) {
     if (dto == null) return false;

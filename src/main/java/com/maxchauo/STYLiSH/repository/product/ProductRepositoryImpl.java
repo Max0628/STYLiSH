@@ -1,9 +1,8 @@
 package com.maxchauo.STYLiSH.repository.product;
 
 import com.maxchauo.STYLiSH.dto.product.dto.product.*;
-import com.maxchauo.STYLiSH.dto.product.form.admin.CampaignForm;
 import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
-import com.maxchauo.STYLiSH.exception.DatabaseOperationException;
+import com.maxchauo.STYLiSH.exception.UserClientException;
 import com.maxchauo.STYLiSH.mapper.product.*;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -54,7 +53,6 @@ public class ProductRepositoryImpl implements ProductRepository{
     sql.append(" LIMIT :limit OFFSET :offset");
     param.addValue("limit", limit);
     param.addValue("offset", offset);
-    System.out.println("sql: "+sql.toString());
     try {
       return template.query(sql.toString(), param, new ProductRowMapper());
     } catch (Exception e) {
@@ -139,5 +137,73 @@ public class ProductRepositoryImpl implements ProductRepository{
       log.warn("findSizeById exception: ", e);
     }
     return Collections.emptyMap();
+  }
+
+  @Override
+  public boolean existsProductById(Long productId) {
+    String sql = "SELECT COUNT(1) FROM Product WHERE id = :productId";
+    MapSqlParameterSource param = new MapSqlParameterSource().addValue("productId", productId);
+    try {
+      Integer count = template.queryForObject(sql, param, Integer.class);
+      return count != null && count > 0;
+    } catch (Exception e) {
+      log.warn("existsProductById exception", e);
+      throw new UserClientException("product not exist: " + productId);
+    }
+  }
+
+  @Override
+  public ProductDto findProductById(Long productId) {
+    String sql = "SELECT id, category, title, description, price, texture, wash, place, note, story, main_image_url FROM Product WHERE id = :productId";
+    MapSqlParameterSource param = new MapSqlParameterSource().addValue("productId", productId);
+    try {
+      return template.queryForObject(sql, param, new ProductRowMapper());
+    } catch (Exception e) {
+      log.warn("findProductById exception", e);
+      throw new UserClientException("product not exist: " + productId);
+    }
+  }
+
+  @Override
+  public Long findColorIdByCodeAndName(String code, String name) {
+    String sql = "SELECT id FROM Color WHERE code = :code AND name = :name";
+    MapSqlParameterSource param = new MapSqlParameterSource()
+            .addValue("code", code)
+            .addValue("name", name);
+    List<Long> resultList = template.query(sql, param, (rs, rowNum) -> rs.getLong("id"));
+    if (resultList != null && !resultList.isEmpty()) {
+      return resultList.get(0);
+    } else {
+      return 0L;
+    }
+  }
+
+
+  @Override
+  public Long findSizeIdBySize(String size) {
+    String sql = "SELECT id FROM Size WHERE size = :size";
+    MapSqlParameterSource param = new MapSqlParameterSource().addValue("size", size);
+    List<Long> resultList = template.query(sql, param, (rs, rowNum) -> rs.getLong("id"));
+    if (resultList != null && !resultList.isEmpty()) {
+      return resultList.get(0);
+    } else {
+      return 0L;
+    }
+  }
+
+
+  @Override
+  public VariantDto findVariantByProductIdAndColorIdAndSizeId(Long productId, Long colorId, Long sizeId) {
+    String sql = "SELECT product_id, color_id, size_id, stock FROM Variant WHERE product_id = :productId AND color_id = :colorId AND size_id = :sizeId";
+    MapSqlParameterSource param = new MapSqlParameterSource()
+            .addValue("productId", productId)
+            .addValue("colorId", colorId)
+            .addValue("sizeId", sizeId);
+    try {
+      return template.queryForObject(sql, param, new VariantRowMapper());
+    } catch (Exception e) {
+      log.warn("findVariantByProductIdAndColorIdAndSizeId exception", e);
+      throw new UserClientException("variant not exist: productId=" + productId + ", colorId=" + colorId + ", sizeId=" + sizeId);
+    }
   }
 }

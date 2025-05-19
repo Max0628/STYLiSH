@@ -2,9 +2,242 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>結帳頁面</title>
+    <style>
+        .tpfield {
+            height: 40px;
+            width: 300px;
+            border: 1px solid gray;
+            margin: 5px 0;
+            padding: 5px;
+        }
+        .tappay-field-focus {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+        }
+        .field-group {
+            margin-bottom: 15px;
+        }
+        .field-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .submit-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .field-success {
+            border-color: #2ecc71;
+        }
+        .field-error {
+            border-color: #e74c3c;
+        }
+    </style>
 </head>
 <body>
-
+    <h1>信用卡結帳</h1>
+    
+    <form id="payment-form">
+        <div class="field-group">
+            <label class="field-label">卡號</label>
+            <div class="tpfield" id="card-number"></div>
+            <div id="card-number-error" class="error-message"></div>
+        </div>
+        
+        <div class="field-group">
+            <label class="field-label">有效期限</label>
+            <div class="tpfield" id="card-expiration-date"></div>
+            <div id="card-expiration-error" class="error-message"></div>
+        </div>
+        
+        <div class="field-group">
+            <label class="field-label">安全碼</label>
+            <div class="tpfield" id="card-ccv"></div>
+            <div id="card-ccv-error" class="error-message"></div>
+        </div>
+        
+        <button id="submit-button" class="submit-button" type="submit" disabled>確認付款</button>
+    </form>
+    
+    <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.19.2"></script>
+    <script>
+        // 設定常數
+        const TAPPAY_APP_ID = 12348;         // 替換為你的 APP_ID
+        const TAPPAY_APP_KEY = "app_pa1pQcKoY22IlnSXq5m5WP5jFKzoRG58VEXpT7wU62ud7mMbDOGzCYIlzzLF"; // 替換為你的 APP_KEY
+        
+        // 初始化 TapPay SDK
+        TPDirect.setupSDK(TAPPAY_APP_ID, TAPPAY_APP_KEY, 'sandbox');
+        
+        // 獲取DOM元素
+        const submitButton = document.getElementById('submit-button');
+        const cardNumberError = document.getElementById('card-number-error');
+        const cardExpirationError = document.getElementById('card-expiration-error');
+        const cardCcvError = document.getElementById('card-ccv-error');
+        
+        // 設定 TapPay Fields
+        TPDirect.card.setup({
+            fields: {
+                number: {
+                    element: '#card-number',
+                    placeholder: '**** **** **** ****'
+                },
+                expirationDate: {
+                    element: document.getElementById('card-expiration-date'),
+                    placeholder: 'MM / YY'
+                },
+                ccv: {
+                    element: '#card-ccv',
+                    placeholder: '後三碼'
+                }
+            },
+            styles: {
+                'input': {
+                    'color': 'gray'
+                },
+                '.valid': {
+                    'color': 'green'
+                },
+                '.invalid': {
+                    'color': 'red'
+                }
+            },
+            isMaskCreditCardNumber: true,
+            maskCreditCardNumberRange: {
+                beginIndex: 6, 
+                endIndex: 11
+            }
+        });
+        
+        // 監聽 TapPay 狀態更新
+        TPDirect.card.onUpdate(function (update) {
+            // 更新按鈕狀態
+            if (update.canGetPrime) {
+                submitButton.removeAttribute('disabled');
+            } else {
+                submitButton.setAttribute('disabled', true);
+            }
+            
+            // 處理卡號欄位狀態
+            if (update.status.number === 2) {
+                document.getElementById('card-number').classList.add('field-error');
+                document.getElementById('card-number').classList.remove('field-success');
+                cardNumberError.textContent = '卡號格式錯誤';
+            } else if (update.status.number === 0) {
+                document.getElementById('card-number').classList.remove('field-error');
+                document.getElementById('card-number').classList.add('field-success');
+                cardNumberError.textContent = '';
+            } else {
+                document.getElementById('card-number').classList.remove('field-error', 'field-success');
+                cardNumberError.textContent = '';
+            }
+            
+            // 處理有效期限欄位狀態
+            if (update.status.expiry === 2) {
+                document.getElementById('card-expiration-date').classList.add('field-error');
+                document.getElementById('card-expiration-date').classList.remove('field-success');
+                cardExpirationError.textContent = '有效期限格式錯誤';
+            } else if (update.status.expiry === 0) {
+                document.getElementById('card-expiration-date').classList.remove('field-error');
+                document.getElementById('card-expiration-date').classList.add('field-success');
+                cardExpirationError.textContent = '';
+            } else {
+                document.getElementById('card-expiration-date').classList.remove('field-error', 'field-success');
+                cardExpirationError.textContent = '';
+            }
+            
+            // 處理安全碼欄位狀態
+            if (update.status.ccv === 2) {
+                document.getElementById('card-ccv').classList.add('field-error');
+                document.getElementById('card-ccv').classList.remove('field-success');
+                cardCcvError.textContent = '安全碼格式錯誤';
+            } else if (update.status.ccv === 0) {
+                document.getElementById('card-ccv').classList.remove('field-error');
+                document.getElementById('card-ccv').classList.add('field-success');
+                cardCcvError.textContent = '';
+            } else {
+                document.getElementById('card-ccv').classList.remove('field-error', 'field-success');
+                cardCcvError.textContent = '';
+            }
+        });
+        
+        // 處理表單提交
+        document.getElementById('payment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // 取得 TapPay Fields 的 status
+            const tappayStatus = TPDirect.card.getTappayFieldsStatus();
+            
+            // 確認是否可以 getPrime
+            if (tappayStatus.canGetPrime === false) {
+                alert('請確認信用卡資訊填寫正確');
+                return;
+            }
+            
+            // 提交按鈕狀態更新
+            submitButton.disabled = true;
+            submitButton.textContent = '處理中...';
+            
+            // 取得 prime
+            TPDirect.card.getPrime((result) => {
+                if (result.status !== 0) {
+                    alert('付款處理錯誤: ' + result.msg);
+                    submitButton.disabled = false;
+                    submitButton.textContent = '確認付款';
+                    return;
+                }
+                
+                // 這裡應該發送 prime 到你的伺服器
+                const prime = result.card.prime;
+                console.log('取得的 prime:', prime);
+                alert('Prime: ' + prime);
+                // 示範用的 fetch API 呼叫 (替換為你的後端 API)
+                fetch('/api/v1/order/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token') // 假設有保存的驗證令牌
+                    },
+                    body: JSON.stringify({
+                        prime: prime,
+                        order: {
+                            // 在此加入其他訂單資訊
+                            amount: 1000, // 示範金額
+                            products: [] // 示範產品列表
+                        }
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/thank-you?order_id=' + data.order_id;
+                    } else {
+                        alert('付款失敗: ' + data.message);
+                        submitButton.disabled = false;
+                        submitButton.textContent = '確認付款';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('系統錯誤，請稍後再試');
+                    submitButton.disabled = false;
+                    submitButton.textContent = '確認付款';
+                });
+            });
+        });
+    </script>
 </body>
 </html>

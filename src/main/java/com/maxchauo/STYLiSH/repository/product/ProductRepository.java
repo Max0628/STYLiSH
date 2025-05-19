@@ -1,7 +1,6 @@
 package com.maxchauo.STYLiSH.repository.product;
 
 import com.maxchauo.STYLiSH.dto.product.dto.product.*;
-import com.maxchauo.STYLiSH.dto.product.form.admin.CampaignForm;
 import com.maxchauo.STYLiSH.dto.product.form.admin.ProductQueryConditionForm;
 
 import java.util.List;
@@ -13,4 +12,9 @@ public interface ProductRepository {
   Map<Long, List<VariantDto>> findVariantById(List<Long> productIds);
   Map<Long, ColorDto> findColorById(List<Long> colorIds);
   Map<Long, SizeDto> findSizeById(List<Long> sizeIds);
+  boolean existsProductById(Long productId);
+  ProductDto findProductById(Long productId);
+  Long findColorIdByCodeAndName(String code, String name);
+  Long findSizeIdBySize(String size);
+  VariantDto findVariantByProductIdAndColorIdAndSizeId(Long productId, Long colorId, Long sizeId);
 }

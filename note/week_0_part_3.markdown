@@ -12,36 +12,39 @@
 
 CREATE TABLE `Product`(
     id BIGINT NOT NULL AUTO_INCREMENT,
-    category VARCHAR(50),
-    title VARCHAR(255),
-    description VARCHAR(255),
-    price BIGINT,
+    category VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    price BIGINT NOT NULL CHECK (price >= 0),
     texture VARCHAR(255),
     wash VARCHAR(50),
     place VARCHAR(50),
     note VARCHAR(255),
     story VARCHAR(255),
-    main_image_url VARCHAR(255),
+    main_image_url VARCHAR(255)  NOT NULL,
     PRIMARY KEY (id)
 );
 
 CREATE TABLE `Color`(
     id BIGINT NOT NULL AUTO_INCREMENT,
-    code VARCHAR(50),
-    name VARCHAR(50),
-    PRIMARY KEY(id)
+    code VARCHAR(50) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE (code),
+    UNIQUE (name)
 );
 
 CREATE TABLE `Size`(
     id BIGINT NOT NULL AUTO_INCREMENT,
-    size VARCHAR(50),
-    PRIMARY KEY(id)
+    size VARCHAR(50) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE (size)
 );
 
 CREATE TABLE `Image`(
     id BIGINT NOT NULL AUTO_INCREMENT,
-    url VARCHAR(255),
-    product_id BIGINT,
+    url VARCHAR(255) NOT NULL,
+    product_id BIGINT NOT NULL ,
     PRIMARY KEY(id),
     FOREIGN KEY(product_id) REFERENCES Product(id)
 );
@@ -50,12 +53,84 @@ CREATE TABLE `Variant`(
     size_id BIGINT NOT NULL,
     color_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
-    stock INT NOT NULL,
+    stock INT NOT NULL CHECK (stock >= 0),
     PRIMARY KEY(product_id,size_id,color_id),
     FOREIGN KEY(size_id) REFERENCES Size(id),
     FOREIGN KEY(color_id) REFERENCES Color(id),
     FOREIGN KEY(product_id) REFERENCES Product(id)
 );
+
+CREATE TABLE `UserInfo` (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255),
+    provider VARCHAR(50) NOT NULL, 
+    picture VARCHAR(1024) DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE `Campaign` (
+    id bigint NOT NULL AUTO_INCREMENT,
+    product_id bigint NOT NULL,
+    picture varchar(255) DEFAULT NULL,
+    story TEXT DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (product_id) REFERENCES Product(id)
+)
+
+CREATE TABLE Orders (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    shipping_method VARCHAR(50) NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    subtotal INT NOT NULL,
+    freight INT NOT NULL,
+    total INT NOT NULL,
+    status_id TINYINT NOT NULL COMMENT '訂單狀態代碼（ex: 1: unpaid, 2: paid, 3: cancelled, 4: refunded）',
+    recipient_name VARCHAR(100) NOT NULL,
+    recipient_phone VARCHAR(20) NOT NULL,
+    recipient_email VARCHAR(100) NOT NULL,  
+    recipient_address VARCHAR(255) NOT NULL,
+    recipient_time VARCHAR(20) NOT NULL COMMENT '配送時段（morning/afternoon/anytime)',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES UserInfo(id)
+);
+
+CREATE TABLE OrderItem (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    product_id BIGINT NOT NULL,
+    product_title_snapshot VARCHAR(255) NOT NULL,   -- 商品名稱快照
+    unit_price INT NOT NULL,
+    color_code_snapshot VARCHAR(50) NOT NULL,       -- 顏色 code 快照
+    color_name_snapshot VARCHAR(50) NOT NULL,       -- 顏色名稱快照
+    size_snapshot VARCHAR(50) NOT NULL,             -- 尺寸快照 (ex: "M")
+    quantity INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES Orders(id),
+    FOREIGN KEY (product_id) REFERENCES Product(id)
+);
+
+
+CREATE TABLE Payment (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
+    amount INT NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    transaction_id VARCHAR(100),
+    status_id TINYINT NOT NULL COMMENT '付款狀態代碼（ex: 1: success, 2: fail）',
+    payment_time DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (order_id) REFERENCES Orders(id)
+);
+
+user (1) --- (N)order
+order(1) --- (N) orderItems
+order(1) ---(N) payment
+
 ```
 ```sql
 foreign key 開關
