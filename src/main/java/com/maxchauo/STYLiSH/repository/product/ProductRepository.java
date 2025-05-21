@@ -17,4 +17,5 @@ public interface ProductRepository {
   Long findColorIdByCodeAndName(String code, String name);
   Long findSizeIdBySize(String size);
   VariantDto findVariantByProductIdAndColorIdAndSizeId(Long productId, Long colorId, Long sizeId);
+  boolean reduceStockByOrderId(long orderId);
 }

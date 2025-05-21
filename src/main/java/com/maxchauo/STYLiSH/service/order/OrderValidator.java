@@ -24,7 +24,7 @@ public class OrderValidator {
 
     // Check if productTitleSnapshot is null or not exist
     if (item.getColor() == null || item.getColor().getCode() == null || item.getColor().getName() == null) {
-      throw new UserClientException("color info missing");
+      throw new UserClientException("orderItem color info missing");
     }
 
     // Check if colorId is null or not exist
@@ -56,13 +56,14 @@ public class OrderValidator {
     }
 
     ProductDto product = productRepository.findProductById(productId);
+    Integer dbPrice = Math.toIntExact(product.getPrice());
+    Integer inputPrice = item.getUnitPrice();
 
     if (product == null) {
       throw new UserClientException("not product found.");
     }
-
-    if (item.getUnitPrice() == null || !product.getPrice().equals(item.getUnitPrice())) {
-      throw new UserClientException("wrong unit price, " + product.getPrice() + " != " + item.getUnitPrice());
+    if (inputPrice == null || dbPrice == null || !inputPrice.equals(dbPrice)) {
+      throw new UserClientException("wrong unit price, " + dbPrice + " != " + inputPrice);
     }
     return true;
   }

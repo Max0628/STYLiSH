@@ -11,6 +11,8 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+
 @Log4j2
 @Repository
 public class OrderRepositoryImpl implements OrderRepository {
@@ -74,6 +76,7 @@ public class OrderRepositoryImpl implements OrderRepository {
       template.update(sql, params, keyHolder, new String[] {"id"});
       return keyHolder.getKey().longValue();
     } catch (DataAccessException e) {
+      e.printStackTrace();
       throw new DataAccessException("Insert Order failed", e) {};
     }
   }
@@ -141,5 +144,29 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     int rows = template.update(sql, params);
     return rows > 0;
+  }
+
+  @Override
+  public boolean updateOrderStatus(long orderId, int statusId) {
+    String sql = "UPDATE Orders SET status_id = :statusId WHERE id = :orderId";
+
+    MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("statusId", statusId)
+            .addValue("orderId", orderId);
+
+    return template.update(sql, params) == 1;
+  }
+
+  @Override
+  public boolean updatePaymentRecord(long orderId, String transactionId, int statusId, LocalDateTime paymentTime) {
+    String sql = "UPDATE Payment SET transaction_id = :txnId, status_id = :statusId, payment_time = :paymentTime WHERE order_id = :orderId";
+
+    MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("txnId", transactionId)
+            .addValue("statusId", statusId)
+            .addValue("paymentTime", paymentTime)
+            .addValue("orderId", orderId);
+
+    return template.update(sql, params) == 1;
   }
 }

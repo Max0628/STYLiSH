@@ -206,4 +206,21 @@ public class ProductRepositoryImpl implements ProductRepository{
       throw new UserClientException("variant not exist: productId=" + productId + ", colorId=" + colorId + ", sizeId=" + sizeId);
     }
   }
+
+  @Override
+  public boolean reduceStockByOrderId(long orderId) {
+    String sql = """
+            UPDATE Variant v
+            JOIN OrderItem oi ON v.product_id = oi.product_id
+                AND v.size_id = (SELECT id FROM Size WHERE size = oi.size_snapshot)
+                AND v.color_id = (SELECT id FROM Color WHERE code = oi.color_code_snapshot)
+            SET v.stock = v.stock - oi.quantity
+            WHERE oi.order_id = :orderId
+        """;
+
+    MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("orderId", orderId);
+
+    return template.update(sql, params) > 0;
+  }
 }

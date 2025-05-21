@@ -1,11 +1,13 @@
 package com.maxchauo.STYLiSH.service.order;
 import com.maxchauo.STYLiSH.dto.product.dto.order.OrderResponseDto;
+import com.maxchauo.STYLiSH.dto.product.dto.order.TapPayResponseDto;
 import com.maxchauo.STYLiSH.dto.product.dto.wrapper.DataWrapper;
 import com.maxchauo.STYLiSH.dto.product.form.order.OrderDataForm;
 import com.maxchauo.STYLiSH.dto.product.form.order.OrderForm;
 import com.maxchauo.STYLiSH.dto.product.form.order.OrderItemForm;
 import com.maxchauo.STYLiSH.exception.UserClientException;
 import com.maxchauo.STYLiSH.repository.order.OrderRepository;
+import com.maxchauo.STYLiSH.util.SecurityUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -13,23 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 @Log4j2
 @Service
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl  {
   private final NamedParameterJdbcTemplate template;
   private final OrderRepository orderRepository;
   private final OrderValidator orderValidator;
+  private final SecurityUtil securityUtil;
+  private final TapPayService tapPayService;
 
-  public OrderServiceImpl(NamedParameterJdbcTemplate template, OrderRepository orderRepository, OrderValidator orderValidator) {
+
+  public OrderServiceImpl(NamedParameterJdbcTemplate template, OrderRepository orderRepository, OrderValidator orderValidator, SecurityUtil securityUtil1, TapPayService tapPayService) {
     this.template = template;
     this.orderRepository = orderRepository;
     this.orderValidator = orderValidator;
+    this.securityUtil = securityUtil1;
+    this.tapPayService = tapPayService;
   }
 
-  @Override
+
   @Transactional
   public DataWrapper<OrderResponseDto> createOrder(OrderForm orderForm) {
 
+    OrderDataForm orderData = orderForm.getOrder();
+
     //prevent NPE
-    if (orderForm == null || orderForm.getOrder() == null) {
+    if (orderForm == null || orderData == null) {
       throw new UserClientException("order form is null");
     }
 
@@ -39,16 +48,11 @@ public class OrderServiceImpl implements OrderService {
     if (prime == null || prime.isBlank()) {
       throw new UserClientException("prime is null");
     }
-    OrderDataForm orderData = orderForm.getOrder();
-
-    if (orderData == null) {
-      throw new UserClientException("order data form is null");
-    }
 
     List<OrderItemForm> items = orderData.getOrderItems();
 
     if (items == null || items.isEmpty()) {
-      throw new UserClientException("订单中没有商品");
+      throw new UserClientException("order items are null or empty");
     }
 
     OrderItemForm item = items.get(0);
@@ -62,12 +66,15 @@ public class OrderServiceImpl implements OrderService {
       throw new UserClientException("order item is invalid");
     }
 
-    orderData.setUserId(1L); // 硬编码临时值，实际应该从用户会话获取
-    orderData.setStatusId(1); // 设置为"未付款"状态
+    orderData.setUserId(securityUtil.getCurrentUserId());
+    orderData.setStatusId(1); //set order unpaid
+
     //insert order data and get orderId
     long orderId = orderRepository.insertOrder(orderData);
+
     //get orderId and insert orderItem;
     boolean  insertOrderItemSuccess = orderRepository.insertOrderItem(item, orderId);
+
     //insert payment record
     boolean insertPaymentSuccess = orderRepository.insertPaymentRecord(
             orderId,
@@ -75,9 +82,13 @@ public class OrderServiceImpl implements OrderService {
             orderData.getPaymentMethod(),            // payment method
             1                                        // statusId，預設未付款
     );
-
     if(orderId==0|| !insertOrderItemSuccess || !insertPaymentSuccess) {
       throw new UserClientException("fail to create order");
+    }
+
+    TapPayResponseDto tapPayResponseDto = tapPayService.executePayment(prime, orderData.getTotal(), item.getProductTitleSnapshot(), orderData.getRecipient().getEmail());
+    if (tapPayResponseDto == null) {
+      throw new UserClientException("TapPay payment failed");
     }
     OrderResponseDto orderResponseDto = new OrderResponseDto(orderId);
     return new DataWrapper<OrderResponseDto>(orderResponseDto);
