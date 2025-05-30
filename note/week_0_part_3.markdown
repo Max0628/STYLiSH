@@ -146,6 +146,12 @@ mysqldump -u root -p --databases stylish > stylish.sql
 mysql -u root -p stylish < stylish.sql
 ```
 
+```log
+連線到 docker 的 mysql
+先進到 wsl
+mysql -h 127.0.0.1 -P 3306 -u root -p
+```
+
 設計完畢
 學習到
 PRIMARY KEY(product_id,size_id,color_id),這邊把最常用的 product_id 放到最左邊
