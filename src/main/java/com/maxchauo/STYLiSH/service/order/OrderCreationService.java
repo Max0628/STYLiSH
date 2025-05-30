@@ -59,8 +59,9 @@ public class OrderCreationService {
 
   long freight = 100;//default freight
     validateSubtotal += freight;
-
-  if(orderData.getSubtotal()!= validateSubtotal) {
+    System.out.println("validateSubtotal: " + validateSubtotal);
+    System.out.println("orderData.getTotal(): " + orderData.getTotal());
+  if(orderData.getTotal()!= validateSubtotal) {
     throw new UserClientException("subtotal mismatch, please check your order");
   }
 

@@ -114,3 +114,13 @@ checkout api request body
 ```
 
 table 設計(我都寫在week_0_part_3)
+
+
+```cli
+//Commands to set up MySQL in Docker
+docker pull mysql:8.0
+
+//Run MySQL container with root password
+docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=Max33476129 -d mysql:8
+docker exec -it mysql mysql -u root -p
+x
