@@ -48,7 +48,8 @@
       // 載入商品清單
       $.ajax({
         //url: 'https://localhost:8443/api/v1/marketing/getAllProductIdAndTitle',
-        url: 'http://35.74.181.119/api/v1/marketing/getAllProductIdAndTitle',
+        //url: 'http://35.74.181.119/api/v1/marketing/getAllProductIdAndTitle',
+        url: '/api/v1/marketing/getAllProductIdAndTitle',
         type: 'GET',
         success: function(response) {
           if (response && response.data) {
@@ -108,7 +109,8 @@
     });
 
     //fetch('https://localhost:8443/api/v1/marketing/insertCampaignProduct', {
-    fetch('http://35.74.181.119/api/v1/marketing/insertCampaignProduct', {
+    //fetch('http://35.74.181.119/api/v1/marketing/insertCampaignProduct', {
+    fetch('/api/v1/marketing/insertCampaignProduct', {
       method: 'POST',
       body: formData,
     })
