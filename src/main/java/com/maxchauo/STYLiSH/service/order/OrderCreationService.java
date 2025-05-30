@@ -26,6 +26,7 @@ public class OrderCreationService {
 
   long createPendingOrder (OrderForm orderForm) {
   OrderDataForm orderData = orderForm.getOrder();
+    System.out.println("orderData: " + orderData.toString());
   //prevent NPE
   if (orderForm == null || orderData == null) {
     throw new UserClientException("order form is null");
@@ -50,12 +51,20 @@ public class OrderCreationService {
   }
 
   //check order form validation
-  boolean validataOrder = orderValidator.validateOrderItem(item);
-  if(!validataOrder) {
-    throw new UserClientException("order item is invalid");
-  }
+  orderValidator.validateOrderItem(item);
 
   orderData.setUserId(securityUtil.getCurrentUserId());
+  long validateSubtotal = 0;
+    validateSubtotal += (long) item.getUnitPrice() * item.getQuantity();
+
+  long freight = 100;//default freight
+    validateSubtotal += freight;
+
+  if(orderData.getSubtotal()!= validateSubtotal) {
+    throw new UserClientException("subtotal mismatch, please check your order");
+  }
+
+  orderData.setTotal((int) validateSubtotal);
   orderData.setStatusId(1); //set order unpaid
 
   //insert order data and get orderId

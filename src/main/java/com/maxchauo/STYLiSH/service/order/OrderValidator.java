@@ -14,7 +14,7 @@ public class OrderValidator {
 
   private final ProductRepository productRepository;
 
-  public boolean validateOrderItem(OrderItemForm item) {
+  public void validateOrderItem(OrderItemForm item) {
     Long productId = item.getProductId();
 
     // Check if productId is null or not exist
@@ -65,6 +65,5 @@ public class OrderValidator {
     if (inputPrice == null || dbPrice == null || !inputPrice.equals(dbPrice)) {
       throw new UserClientException("wrong unit price, " + dbPrice + " != " + inputPrice);
     }
-    return true;
   }
 }
