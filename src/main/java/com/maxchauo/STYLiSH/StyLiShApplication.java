@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @EnableConfigurationProperties
 @SpringBootApplication
 @RestController
-public class StyLiShApplication {
+public class 	StyLiShApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(StyLiShApplication.class, args);

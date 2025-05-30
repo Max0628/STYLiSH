@@ -53,13 +53,13 @@ public class OrderFacadeService {
       throw new UserClientException("TapPay response is null");
     }
 
-    // status check
-    if (tapPayResponseDto.getStatus() != 0) {
+    if (tapPayResponseDto.getStatus() == 91) {
       log.warn("TapPay payment failed: " + tapPayResponseDto.getMsg());
       throw new UserClientException("TapPay payment failed: " + tapPayResponseDto.getMsg());
     }
 
-    if (tapPayResponseDto.getStatus() == 91) {
+    // status check
+    if (tapPayResponseDto.getStatus() != 0) {
       log.warn("TapPay payment failed: " + tapPayResponseDto.getMsg());
       throw new UserClientException("TapPay payment failed: " + tapPayResponseDto.getMsg());
     }
@@ -70,18 +70,8 @@ public class OrderFacadeService {
       throw new UserClientException("TapPay response recTradeId is null");
     }
 
-    boolean updateDbrecordSuccess = orderConfirmationService.confirmOrderPayment(orderId, tapPayResponseDto.getRecTradeId());
-    if (!updateDbrecordSuccess) {
-      log.warn("order confirmation failed");
-      throw new UserClientException("order confirmation failed");
-    }
-
-    if (orderId >= 0 && updateDbrecordSuccess) {
-      OrderResponseDto orderResponseDto = new OrderResponseDto(orderId);
-      return new DataWrapper<OrderResponseDto>(orderResponseDto);
-    } else {
-      log.warn("order creation failed");
-      throw new UserClientException("order creation failed");
-    }
+    orderConfirmationService.confirmOrderPayment(orderId, tapPayResponseDto.getRecTradeId());
+    OrderResponseDto orderResponseDto = new OrderResponseDto(orderId);
+    return new DataWrapper<OrderResponseDto>(orderResponseDto);
   }
 }

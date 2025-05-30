@@ -1,5 +1,8 @@
 package com.maxchauo.STYLiSH.exception;
 
+import lombok.Getter;
+
+@Getter
 public abstract class BaseException extends RuntimeException {
   private final int statusCode;
 
@@ -8,7 +11,4 @@ public abstract class BaseException extends RuntimeException {
     this.statusCode = statusCode;
   }
 
-  public int getStatusCode() {
-    return statusCode;
-  }
 }

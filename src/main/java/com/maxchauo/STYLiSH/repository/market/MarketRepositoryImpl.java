@@ -45,7 +45,7 @@ public class MarketRepositoryImpl implements MarketRepository{
                               null, // sizes
                               null, // variants
                               null, // mainImage
-                              null // images
+                              null  // images
                       ));
 
       return new ProductResponseDto(result, null);

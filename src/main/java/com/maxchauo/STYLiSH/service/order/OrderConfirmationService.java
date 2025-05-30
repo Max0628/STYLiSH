@@ -20,7 +20,7 @@ public class OrderConfirmationService {
   }
 
   @Transactional
-  public boolean confirmOrderPayment(long orderId, String transactionId) {
+  public void confirmOrderPayment(long orderId, String transactionId) {
 
     // update order status
     boolean updatedOrder = orderRepository.updateOrderStatus(orderId, 2);
@@ -44,6 +44,5 @@ public class OrderConfirmationService {
     if (!reduced) {
       throw new IllegalStateException("failed to reduce stock");
     }
-    return true;
   }
 }

@@ -28,30 +28,30 @@ public class OrderRepositoryImpl implements OrderRepository {
     String sql =
         """
         INSERT INTO Orders (
-            user_id, 
-            shipping_method, 
+            user_id,
+            shipping_method,
             payment_method,
-            subtotal, 
-            freight, 
-            total, 
+            subtotal,
+            freight,
+            total,
             status_id,
-            recipient_name, 
-            recipient_phone, 
+            recipient_name,
+            recipient_phone,
             recipient_email,
-            recipient_address, 
+            recipient_address,
             recipient_time
         ) VALUES (
-            :userId, 
-            :shippingMethod, 
+            :userId,
+            :shippingMethod,
             :paymentMethod,
-            :subtotal, 
-            :freight, 
-            :total, 
+            :subtotal,
+            :freight,
+            :total,
             :statusId,
-            :recipientName, 
-            :recipientPhone, 
+            :recipientName,
+            :recipientPhone,
             :recipientEmail,
-            :recipientAddress, 
+            :recipientAddress,
             :recipientTime
         )
     """;

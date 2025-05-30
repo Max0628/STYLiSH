@@ -41,7 +41,7 @@ public class MarketController {
   }
 
   @GetMapping("/campaigns")
-  public ResponseEntity getAllCampaignInfo() {
+  public ResponseEntity<Object> getAllCampaignInfo() {
     DataWrapper<List<CampaignDto>> response = service.getAllCampaignInfo();
     if (response.getData() != null) {
       return ResponseEntity.ok(response);

@@ -56,13 +56,14 @@ public class OrderValidator {
     }
 
     ProductDto product = productRepository.findProductById(productId);
+    if (product == null || product.getPrice() == null) {
+      throw new UserClientException("not product found.");
+    }
+
     Integer dbPrice = Math.toIntExact(product.getPrice());
     Integer inputPrice = item.getUnitPrice();
 
-    if (product == null) {
-      throw new UserClientException("not product found.");
-    }
-    if (inputPrice == null || dbPrice == null || !inputPrice.equals(dbPrice)) {
+    if (inputPrice == null || !inputPrice.equals(dbPrice)) {
       throw new UserClientException("wrong unit price, " + dbPrice + " != " + inputPrice);
     }
   }
