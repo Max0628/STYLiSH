@@ -27,7 +27,7 @@ public class OrderRepositoryImpl implements OrderRepository {
   public long insertOrder(OrderDataForm form) {
     String sql =
         """
-        INSERT INTO orders (
+        INSERT INTO Orders (
             user_id, 
             shipping_method, 
             payment_method,
