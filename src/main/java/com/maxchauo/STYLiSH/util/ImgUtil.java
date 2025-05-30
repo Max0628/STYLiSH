@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,7 +29,7 @@ public class ImgUtil {
     try {
       if (image != null && !image.isEmpty()) {
         String uniqueImageName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-        Path path = Paths.get(uploadPngDirectory, uniqueImageName);
+        Path path = Paths.get(uploadPngDirectory + File.separator + uniqueImageName);
         Files.write(path, image.getBytes());
         return uniqueImageName;
       }
@@ -51,7 +52,7 @@ public class ImgUtil {
         for (MultipartFile image : images) {
           if (!image.isEmpty()) {
             String uniqueImageName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-            Path path = Paths.get(uploadPngDirectory, uniqueImageName);
+            Path path = Paths.get(uploadPngDirectory + File.separator + uniqueImageName);
             Files.write(path, image.getBytes());
             imagesUrl.add(uniqueImageName);
           }

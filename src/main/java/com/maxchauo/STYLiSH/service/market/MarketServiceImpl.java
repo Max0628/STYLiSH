@@ -1,5 +1,6 @@
 package com.maxchauo.STYLiSH.service.market;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.maxchauo.STYLiSH.dto.product.dto.ApiResponse;
 import com.maxchauo.STYLiSH.dto.product.dto.product.CampaignDto;
 import com.maxchauo.STYLiSH.dto.product.dto.product.ProductResponseDto;
@@ -7,10 +8,9 @@ import com.maxchauo.STYLiSH.dto.product.dto.wrapper.DataWrapper;
 import com.maxchauo.STYLiSH.dto.product.form.admin.CampaignForm;
 import com.maxchauo.STYLiSH.exception.UserClientException;
 import com.maxchauo.STYLiSH.repository.market.MarketRepository;
+import com.maxchauo.STYLiSH.repository.redis.RedisRepository;
 import com.maxchauo.STYLiSH.util.CommonUtil;
 import com.maxchauo.STYLiSH.util.ImgUtil;
-import com.maxchauo.STYLiSH.util.JwtUtil;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,21 +27,26 @@ public class MarketServiceImpl implements MarketService {
   @Value("${upload.url-path}")
   private  String urlpath;
 
-  private final MarketRepository repo;
-  private final JwtUtil jwtUtil;
-  private final ImgUtil imgUtil;
+  @Value("${spring.data.campaign.cache.key}")
+  private String campaignCacheKey;
 
-  public MarketServiceImpl(MarketRepository repo, JwtUtil jwtUtil, ImgUtil imgUtil) {
+  @Value("${spring.data.redis.timeout}")
+  private long cacheTtlSeconds;
+
+  private final ImgUtil imgUtil;
+  private final MarketRepository repo;
+  private final RedisRepository redisRepository;
+
+  public MarketServiceImpl(MarketRepository repo, ImgUtil imgUtil, RedisRepository redisRepository) {
     this.repo = repo;
-    this.jwtUtil = jwtUtil;
     this.imgUtil = imgUtil;
+    this.redisRepository = redisRepository;
   }
 
   @Override
   public ProductResponseDto getAllProductIdAndTitle() {
     try {
-      ProductResponseDto result = repo.getAllProductIdAndTitle();
-      return result;
+      return repo.getAllProductIdAndTitle();
     } catch (Exception e) {
       log.warn("getAllProductIdAndTitle exception: " + e);
     }
@@ -65,6 +70,9 @@ public class MarketServiceImpl implements MarketService {
       boolean result = repo.insertCampaignProduct(processedForms);
 
       if (result) {
+        // Clear the cache after inserting new campaign products
+        redisRepository.delete(campaignCacheKey);
+        log.info("Campaign cache cleared after successful insert");
         return new ApiResponse("200", "Insert campaign product success", null);
       } else {
         return new ApiResponse("500", "Insert campaign product failed", null);
@@ -78,7 +86,15 @@ public class MarketServiceImpl implements MarketService {
   @Override
   public DataWrapper<List<CampaignDto>> getAllCampaignInfo() {
     try {
+      TypeReference<List<CampaignDto>> typeRef = new TypeReference<>() {};
+      List<CampaignDto> cachedResult = redisRepository.get(campaignCacheKey, typeRef);
+      log.warn("cachedResult : " + cachedResult);
+      if (cachedResult != null && !cachedResult.isEmpty()) {
+        log.info("returning cached campaign data");
+        return new DataWrapper<>(cachedResult);
+      }
       List<CampaignDto> result = repo.getAllCampaignInfo();
+      log.info("Fetched Campaign Data from Database: " + result.toString());
       List<CampaignDto> campaignDtos = new ArrayList<>();
       for (CampaignDto item : result) {
         CampaignDto dto = new CampaignDto();
@@ -87,6 +103,13 @@ public class MarketServiceImpl implements MarketService {
         dto.setStory(item.getStory());
         campaignDtos.add(dto);
       }
+
+      // save to cache
+      if (!campaignDtos.isEmpty()) {
+        redisRepository.save(campaignCacheKey, campaignDtos, cacheTtlSeconds);
+        log.info("Campaign data saved to Redis cache with key: " + campaignCacheKey);
+      }
+
       return new DataWrapper<>(campaignDtos);
     } catch (Exception e) {
       log.warn("getAllCampaignInfo exception: ", e);
