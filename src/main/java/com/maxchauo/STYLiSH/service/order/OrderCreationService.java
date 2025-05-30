@@ -26,7 +26,6 @@ public class OrderCreationService {
 
   long createPendingOrder (OrderForm orderForm) {
   OrderDataForm orderData = orderForm.getOrder();
-    System.out.println("orderData: " + orderData.toString());
   //prevent NPE
   if (orderForm == null || orderData == null) {
     throw new UserClientException("order form is null");
@@ -59,8 +58,6 @@ public class OrderCreationService {
 
   long freight = 100;//default freight
     validateSubtotal += freight;
-    System.out.println("validateSubtotal: " + validateSubtotal);
-    System.out.println("orderData.getTotal(): " + orderData.getTotal());
   if(orderData.getTotal()!= validateSubtotal) {
     throw new UserClientException("subtotal mismatch, please check your order");
   }

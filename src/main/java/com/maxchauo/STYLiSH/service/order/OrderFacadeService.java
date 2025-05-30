@@ -42,7 +42,6 @@ public class OrderFacadeService {
     TapPayResponseDto tapPayResponseDto;
     try {
       tapPayResponseDto = tapPayService.executePayment(prime, amount, detail, email);
-      System.out.println("tapPayResponseDto "+tapPayResponseDto.toString());
     } catch (RestClientException e) {
       log.warn("TapPay connection failed: " + e.getMessage());
       throw new UserClientException("TapPay connection failed，please try again later");
