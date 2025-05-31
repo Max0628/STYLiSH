@@ -2,6 +2,7 @@ package com.maxchauo.STYLiSH.config;
 
 import com.maxchauo.STYLiSH.filter.JwtAuthenticationFilter;
 import com.maxchauo.STYLiSH.filter.JwtExceptionFilter;
+import com.maxchauo.STYLiSH.filter.RateLimiterFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,11 +20,13 @@ public class SecurityConfig {
 
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final JwtExceptionFilter jwtExceptionFilter;
+  private final RateLimiterFilter rateLimiterFilter;
 
   public SecurityConfig(
-      JwtAuthenticationFilter jwtAuthenticationFilter, JwtExceptionFilter jwtExceptionFilter) {
+          JwtAuthenticationFilter jwtAuthenticationFilter, JwtExceptionFilter jwtExceptionFilter, RateLimiterFilter rateLimiterFilter) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
+    this.rateLimiterFilter = rateLimiterFilter;
   }
 
   @Bean
@@ -41,6 +44,7 @@ public class SecurityConfig {
                     .requestMatchers("/api/v1/products/**", "/api/v1/marketing/**").permitAll()
                     .requestMatchers("/images/**").permitAll().anyRequest().authenticated());
     http.addFilterBefore(jwtExceptionFilter, UsernamePasswordAuthenticationFilter.class);// add new custom filter
+    http.addFilterBefore(rateLimiterFilter, JwtExceptionFilter.class); // add rate limiter filter
     http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
