@@ -14,4 +14,5 @@ public class UserDto {
   private String email;
   private String password;
   private String picture;
+  private String role; // e.g., "USER", "ADMIN"
 }

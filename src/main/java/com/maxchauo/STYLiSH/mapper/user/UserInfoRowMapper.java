@@ -16,6 +16,7 @@ public class UserInfoRowMapper implements RowMapper<UserDto> {
     userDto.setPassword(rs.getString("password"));
     userDto.setProvider(rs.getString("provider"));
     userDto.setPicture(rs.getString("picture"));
+    userDto.setRole(rs.getString("role"));
     return userDto;
   }
 }

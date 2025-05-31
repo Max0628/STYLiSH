@@ -70,11 +70,12 @@ public class UserServiceImpl implements UserService {
             userDto.getProvider(),
             userDto.getName(),
             userDto.getEmail(),
+            userDto.getRole(),//RBAC
             userDto.getPicture() != null && !userDto.getPicture().isEmpty()
                 ? userDto.getPicture()
                 : "default_picture_url");
 
-    String token = jwtUtil.generateToken(userDto.getId());
+    String token = jwtUtil.generateToken(userDto.getId(), userDto.getRole());
     int expiredInSec = (int) (jwtUtil.getExpirationMs() / 1000);
     AuthResponseDto auth = new AuthResponseDto(token, expiredInSec, userResponseDto);
     return new DataWrapper<>(auth);
@@ -115,8 +116,9 @@ public class UserServiceImpl implements UserService {
             userDto.getProvider(),
             userDto.getName(),
             userDto.getEmail(),
+            userDto.getRole(), // RBAC
             userDto.getPicture());
-    String token = jwtUtil.generateToken(userDto.getId());
+    String token = jwtUtil.generateToken(userDto.getId(), userDto.getRole());
     int expiredInSec = (int) (jwtUtil.getExpirationMs() / 1000);
 
     AuthResponseDto auth = new AuthResponseDto(token, expiredInSec, userResponseDto);
@@ -151,7 +153,7 @@ public class UserServiceImpl implements UserService {
       userDto.setPicture("default_picture_url");
     }
 
-    String token = jwtUtil.generateToken(userDto.getId());
+    String token = jwtUtil.generateToken(userDto.getId(),userDto.getRole());
     int expiredInSec = (int) (jwtUtil.getExpirationMs() / 1000);
     AuthResponseDto auth =
         new AuthResponseDto(
@@ -162,6 +164,7 @@ public class UserServiceImpl implements UserService {
                 userDto.getProvider(),
                 userDto.getName(),
                 userDto.getEmail(),
+                userDto.getRole(), // RBAC
                 userDto.getPicture()));
     return new DataWrapper<>(auth);
   }

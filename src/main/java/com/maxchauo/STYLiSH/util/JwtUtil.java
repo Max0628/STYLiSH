@@ -25,11 +25,12 @@ public class JwtUtil {
     this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
   }
 
-  public String generateToken(long userId) {
+  public String generateToken(long userId, String role) {
     Date now = new Date();
     Date expiry = new Date(now.getTime() + expirationTimeMs);
     return Jwts.builder()
         .subject(String.valueOf(userId))
+        .claim("role", role)//RBAC
         .issuedAt(now)
         .expiration(expiry)
         .signWith(key)
@@ -59,6 +60,19 @@ public class JwtUtil {
                   .getPayload()
                   .getSubject();
       return Long.parseLong(userId);
+    } catch (Exception e) {
+      throw new JwtTokenInvalidException("token invalid or expired");
+    }
+  }
+
+  public String getRoleFromToken(String token) {
+    try {
+      return Jwts.parser()
+              .verifyWith(key)
+              .build()
+              .parseSignedClaims(token)
+              .getPayload()
+              .get("role", String.class);
     } catch (Exception e) {
       throw new JwtTokenInvalidException("token invalid or expired");
     }

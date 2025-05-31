@@ -7,6 +7,7 @@ public class FacebookProfile {
   private String name;
   private String email;
   private Picture picture;
+  private String role; // e.g., "USER", "ADMIN"
 
   @Data
   public static class Picture {

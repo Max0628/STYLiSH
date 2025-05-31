@@ -91,7 +91,7 @@ public class UserRepositoryImpl implements UserRepository {
       throw new UserClientException("email is null or empty");
     }
 
-    String sql = "SELECT id, name, email, password, provider, picture FROM `UserInfo` WHERE email = :email";
+    String sql = "SELECT id, name, email, password, provider, picture, role FROM `UserInfo` WHERE email = :email";
     MapSqlParameterSource param = new MapSqlParameterSource()
             .addValue("email", email);
     try {
@@ -107,7 +107,7 @@ public class UserRepositoryImpl implements UserRepository {
 
   @Override
   public UserProfileDto findById(long userId){
-    String sql = "SELECT id, name, email, provider, picture FROM `UserInfo` WHERE id = :id";
+    String sql = "SELECT id, name, email, provider, picture, role FROM `UserInfo` WHERE id = :id";
     MapSqlParameterSource param = new MapSqlParameterSource().addValue("id", userId);
     try {
       return template.queryForObject(sql, param, new UserProfileRowMapper());
