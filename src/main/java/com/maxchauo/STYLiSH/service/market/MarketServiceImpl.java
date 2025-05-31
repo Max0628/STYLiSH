@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class MarketServiceImpl implements MarketService {
   private String campaignCacheKey;
 
   @Value("${spring.data.redis.timeout}")
-  private long cacheTtlSeconds;
+  private Duration cacheTtlSeconds;
 
   private final ImgUtil imgUtil;
   private final MarketRepository repo;
@@ -107,7 +108,6 @@ public class MarketServiceImpl implements MarketService {
       // save to cache
       if (!campaignDtos.isEmpty()) {
         redisRepository.save(campaignCacheKey, campaignDtos, cacheTtlSeconds);
-        log.info("Campaign data saved to Redis cache with key: " + campaignCacheKey);
       }
 
       return new DataWrapper<>(campaignDtos);

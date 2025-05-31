@@ -3,7 +3,6 @@ package com.maxchauo.STYLiSH.repository.redis;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +11,7 @@ import java.time.Duration;
 @Log4j2
 @Repository
 public class RedisRepositoryImpl implements RedisRepository {
+
   private final StringRedisTemplate redisTemplate;
   private final ObjectMapper objectMapper;
 
@@ -21,13 +21,13 @@ public class RedisRepositoryImpl implements RedisRepository {
   }
 
   @Override
-  public <T> void save(String key, T value, long timeoutInSeconds) {
+  public <T> void save(String key, T value, Duration timeoutInSeconds) {
     try {
       String json = objectMapper.writeValueAsString(value);
-      redisTemplate.opsForValue().set(key, json, Duration.ofSeconds(timeoutInSeconds));
+      redisTemplate.opsForValue().set(key, json, timeoutInSeconds);
       log.info("Saved to Redis: key={}, value={}", key, json);
     } catch (Exception e) {
-      throw new RuntimeException("Failed to save to Redis", e);
+      log.warn("Failed to save to Redis", e);
     }
   }
 
@@ -39,13 +39,19 @@ public class RedisRepositoryImpl implements RedisRepository {
       log.info("Retrieved from Redis: key={}, value={}", key, json);
       return objectMapper.readValue(json, clazz);
     } catch (Exception e) {
-      throw new RuntimeException("Failed to get from Redis", e);
+      log.warn("Failed to get from Redis", e);
+      return null;
     }
   }
 
   @Override
   public void delete(String key) {
-    redisTemplate.delete(key);
+    try {
+      redisTemplate.delete(key);
+      log.info("Deleted from Redis: key={}", key);
+    } catch (Exception e) {
+      log.warn("Failed to delete from Redis", e);
+    }
   }
 
   // overload for List<CampaignDto>
@@ -56,7 +62,8 @@ public class RedisRepositoryImpl implements RedisRepository {
       log.info("Retrieved from Redis: key={}, value={}", key, json);
       return objectMapper.readValue(json, typeRef);
     } catch (Exception e) {
-      throw new RuntimeException("Failed to get list from Redis", e);
+      log.warn("Failed to get from Redis (typeRef)", e);
+      return null;
     }
   }
 }
