@@ -67,6 +67,7 @@ CREATE TABLE `UserInfo` (
     password VARCHAR(255),
     provider VARCHAR(50) NOT NULL, 
     picture VARCHAR(1024) DEFAULT NULL,
+    role enum('USER','ADMIN') NOT NULL DEFAULT 'USER',
     PRIMARY KEY (id)
 );
 

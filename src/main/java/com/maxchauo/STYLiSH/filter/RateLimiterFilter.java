@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,11 +19,12 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class RateLimiterFilter extends OncePerRequestFilter {
 
   // store IP addresses and their request timestamps
-  private static final ConcurrentHashMap<String, Deque<Long>> ipRequestMap =
-      new ConcurrentHashMap<>();
+  private static final ConcurrentHashMap<String, Deque<Long>> ipRequestMap = new ConcurrentHashMap<>();
+  @Value("${rate.limiter.max-requests:10}")
+  private int maxRequests;
 
-  private static final int MAX_REQUESTS = 10;
-  private static final long WINDOW_SIZE_MILLIS = 1000;
+  @Value("${rate.limiter.window-millis:1000}")
+  private long windowSizeMillis;
 
   @Override
   protected void doFilterInternal(
@@ -47,11 +49,11 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     //multithreading safe operation
     synchronized (deque) {
       //remove timeStamp not in sliding window
-      while (!deque.isEmpty() && deque.peekFirst() <= now - WINDOW_SIZE_MILLIS) {
+      while (!deque.isEmpty() && deque.peekFirst() <= now - windowSizeMillis) {
         deque.pollFirst();
       }
 
-      if (deque.size() >= MAX_REQUESTS) {
+      if (deque.size() >= maxRequests) {
         response.setStatus(429); // Too Many Requests
         response.getWriter().write("Too Many Requests - Rate limit exceeded.");
         log.warn("IP {} is been limited，current request count: {}", ip, deque.size());
