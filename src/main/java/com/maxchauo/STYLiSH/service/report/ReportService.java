@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface ReportService {
   List<UserPaymentReportDto> getUserTotalPayments();
+  void enqueueOrdersToQueue(String jobId);
 }

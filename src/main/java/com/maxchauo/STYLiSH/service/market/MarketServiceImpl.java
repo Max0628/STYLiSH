@@ -13,6 +13,7 @@ import com.maxchauo.STYLiSH.util.CommonUtil;
 import com.maxchauo.STYLiSH.util.ImgUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -26,7 +27,7 @@ public class MarketServiceImpl implements MarketService {
   private String domain;
 
   @Value("${upload.url-path}")
-  private  String urlpath;
+  private String urlPath;
 
   @Value("${spring.data.campaign.cache.key}")
   private String campaignCacheKey;
@@ -49,7 +50,7 @@ public class MarketServiceImpl implements MarketService {
     try {
       return repo.getAllProductIdAndTitle();
     } catch (Exception e) {
-      log.warn("getAllProductIdAndTitle exception: " + e);
+      log.warn("getAllProductIdAndTitle exception");
     }
     return new ProductResponseDto(List.of(), null);
   }
@@ -79,7 +80,7 @@ public class MarketServiceImpl implements MarketService {
         return new ApiResponse("500", "Insert campaign product failed", null);
       }
     } catch (Exception e) {
-      log.error("insertCampaignProduct exception: ", e);
+      log.error("insertCampaignProduct exception");
       throw new UserClientException("user wrong data");
     }
   }
@@ -88,31 +89,43 @@ public class MarketServiceImpl implements MarketService {
   public DataWrapper<List<CampaignDto>> getAllCampaignInfo() {
     try {
       TypeReference<List<CampaignDto>> typeRef = new TypeReference<>() {};
+      // fetch from cache at first
       List<CampaignDto> cachedResult = redisRepository.get(campaignCacheKey, typeRef);
-      log.warn("cachedResult : " + cachedResult);
+      log.warn("cachedResult: {}", cachedResult);
       if (cachedResult != null && !cachedResult.isEmpty()) {
         log.info("returning cached campaign data");
         return new DataWrapper<>(cachedResult);
       }
+
+    } catch (RedisConnectionFailureException e) {
+      log.warn("Redis unavailable. Fallback to DB. cacheKey={}", campaignCacheKey);
+    } catch (Exception e) {
+      log.warn("Unexpected Redis error while reading cache");
+    }
+
+    try {
+      // if cache is empty, fetch from database
       List<CampaignDto> result = repo.getAllCampaignInfo();
       log.info("Fetched Campaign Data from Database: " + result.toString());
       List<CampaignDto> campaignDtos = new ArrayList<>();
       for (CampaignDto item : result) {
         CampaignDto dto = new CampaignDto();
         dto.setProductId(item.getProductId());
-        dto.setPicture(CommonUtil.buildFullImageUrl(domain, urlpath, item.getPicture()));
+        dto.setPicture(CommonUtil.buildFullImageUrl(domain, urlPath, item.getPicture()));
         dto.setStory(item.getStory());
         campaignDtos.add(dto);
       }
-
-      // save to cache
-      if (!campaignDtos.isEmpty()) {
-        redisRepository.save(campaignCacheKey, campaignDtos, cacheTtlSeconds);
+      try {
+        // save to cache
+        if (!campaignDtos.isEmpty()) {
+          redisRepository.save(campaignCacheKey, campaignDtos, cacheTtlSeconds);
+        }
+      } catch (RedisConnectionFailureException e) {
+        log.warn("Redis unavailable. Skip saving campaign cache");
       }
-
       return new DataWrapper<>(campaignDtos);
     } catch (Exception e) {
-      log.warn("getAllCampaignInfo exception: ", e);
+      log.warn("getAllCampaignInfo exception: ");
       throw new UserClientException("wrong url path");
     }
   }

@@ -7,59 +7,66 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Deque;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.Collections;
+import java.util.List;
+
 @Log4j2
 @Component
 public class RateLimiterFilter extends OncePerRequestFilter {
 
-  // store IP addresses and their request timestamps
-  private static final ConcurrentHashMap<String, Deque<Long>> ipRequestMap = new ConcurrentHashMap<>();
+  private final StringRedisTemplate redisTemplate;
+
   @Value("${rate.limiter.max-requests:10}")
   private int maxRequests;
 
   @Value("${rate.limiter.window-millis:1000}")
-  private long windowSizeMillis;
+  private long windowMillis;
+
+  public RateLimiterFilter(StringRedisTemplate redisTemplate) {
+    this.redisTemplate = redisTemplate;
+  }
 
   @Override
   protected void doFilterInternal(
-          @NotNull HttpServletRequest request,
-          @NotNull HttpServletResponse response,
-          @NotNull FilterChain filterChain)
-          throws ServletException, IOException {
+      @NotNull HttpServletRequest request,
+      @NotNull HttpServletResponse response,
+      @NotNull FilterChain filterChain)
+      throws ServletException, IOException {
 
-    String ip = request.getHeader("X-Forwarded-For");
-    if (ip == null || ip.isBlank()) {
-      response.setStatus(400); // Bad Request
-      response.getWriter().write("Missing X-Forwarded-For header.");
-      return;
+    //    String ip = request.getRemoteAddr();
+    String ip = request.getHeader("X-Forwarded-For"); // for testing multiple IPs
+    if (ip == null || ip.isEmpty()) {
+      ip = request.getRemoteAddr(); // fallback
     }
+    String key = "rate_limit:" + ip;
+    String now = String.valueOf(System.currentTimeMillis());
 
-    long now = System.currentTimeMillis();
-    log.info("RateLimiterFilter processing request from IP: {}", ip);
+    List<String> keys = Collections.singletonList(key); // fit redis api
+    List<String> args = List.of(now, String.valueOf(windowMillis), String.valueOf(maxRequests));
 
-    //every IP address has its own request history
-    Deque<Long> deque = ipRequestMap.computeIfAbsent(ip, k -> new ConcurrentLinkedDeque<>());
+    DefaultRedisScript<Long> script = new DefaultRedisScript<>();
+    script.setLocation(new ClassPathResource("lua/rate_limiter.lua"));
+    script.setResultType(Long.class);
 
-    //multithreading safe operation
-    synchronized (deque) {
-      //remove timeStamp not in sliding window
-      while (!deque.isEmpty() && deque.peekFirst() <= now - windowSizeMillis) {
-        deque.pollFirst();
-      }
-
-      if (deque.size() >= maxRequests) {
-        response.setStatus(429); // Too Many Requests
+    try {// catch RedisConnectionFailureException to handle Redis
+      Long result = redisTemplate.execute(script, keys, args.toArray());
+      if (result == 0L) {
+        log.warn("IP {} is rate limited", ip);
+        response.setStatus(429);
         response.getWriter().write("Too Many Requests - Rate limit exceeded.");
-        log.warn("IP {} is been limited，current request count: {}", ip, deque.size());
         return;
       }
-      deque.addLast(now);
+    } catch (RedisConnectionFailureException e) {
+      log.warn("Redis unavailable. Bypassing rate limit. IP={}", ip);
+      //let the request pass through while redis is down
     }
     filterChain.doFilter(request, response);
   }

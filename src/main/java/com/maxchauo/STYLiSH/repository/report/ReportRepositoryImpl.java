@@ -2,6 +2,7 @@ package com.maxchauo.STYLiSH.repository.report;
 
 import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +27,33 @@ public class ReportRepositoryImpl implements ReportRepository {
     }catch (Exception e) {
       log.warn("Error fetching user orders: " + e.getMessage());
       return List.of(); // Return an empty list in case of error
+    }
+  }
+
+  @Override
+  public List<Map<String, Object>> getOrdersToEnqueue() {
+    String sql = "SELECT id, user_id, total FROM Orders WHERE status = 'NEW'";
+    try{
+      return template.queryForList(sql, new MapSqlParameterSource());
+    }catch (Exception e){
+      e.printStackTrace();
+      log.warn("Error fetching orders to enqueue: " + e.getMessage());
+      return List.of(); // Return an empty list in case of error
+    }
+  }
+
+  @Override
+  public void updateOrderStatus(Long orderId, String status) {
+    String sql = "UPDATE Orders SET status = :status WHERE id = :orderId";
+    MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("status", status)
+            .addValue("orderId", orderId);
+    try{
+      template.update(sql, params);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.warn("Failed to update order status for orderId {}: {}", orderId, e.getMessage());
+      throw new RuntimeException(e);
     }
   }
 }

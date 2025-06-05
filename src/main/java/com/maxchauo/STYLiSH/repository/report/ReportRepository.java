@@ -5,4 +5,6 @@ import java.util.Map;
 
 public interface ReportRepository {
   List<Map<String, Object>> fetchUserOrders();
+  List<Map<String, Object>> getOrdersToEnqueue();
+  void updateOrderStatus(Long orderId, String status);
 }

@@ -27,7 +27,7 @@ public class RedisRepositoryImpl implements RedisRepository {
       redisTemplate.opsForValue().set(key, json, timeoutInSeconds);
       log.info("Saved to Redis: key={}, value={}", key, json);
     } catch (Exception e) {
-      log.warn("Failed to save to Redis", e);
+      log.warn("Failed to save to Redis");
     }
   }
 
@@ -39,7 +39,7 @@ public class RedisRepositoryImpl implements RedisRepository {
       log.info("Retrieved from Redis: key={}, value={}", key, json);
       return objectMapper.readValue(json, clazz);
     } catch (Exception e) {
-      log.warn("Failed to get from Redis", e);
+      log.warn("Failed to get from Redis");
       return null;
     }
   }
@@ -50,7 +50,7 @@ public class RedisRepositoryImpl implements RedisRepository {
       redisTemplate.delete(key);
       log.info("Deleted from Redis: key={}", key);
     } catch (Exception e) {
-      log.warn("Failed to delete from Redis", e);
+      log.warn("Failed to delete from Redis");
     }
   }
 
@@ -62,7 +62,7 @@ public class RedisRepositoryImpl implements RedisRepository {
       log.info("Retrieved from Redis: key={}, value={}", key, json);
       return objectMapper.readValue(json, typeRef);
     } catch (Exception e) {
-      log.warn("Failed to get from Redis (typeRef)", e);
+      log.warn("Failed to get from Redis (typeRef)");
       return null;
     }
   }
