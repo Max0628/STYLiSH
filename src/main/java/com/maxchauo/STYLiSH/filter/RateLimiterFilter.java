@@ -42,10 +42,11 @@ public class RateLimiterFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
 
     //    String ip = request.getRemoteAddr();
-    String ip = request.getHeader("X-Forwarded-For"); // for testing multiple IPs
-    if (ip == null || ip.isEmpty()) {
-      ip = request.getRemoteAddr(); // fallback
-    }
+    //String ip = request.getHeader("X-Forwarded-For"); // for testing multiple IPs
+    //if (ip == null || ip.isEmpty()) {
+    //  ip = request.getRemoteAddr(); // fallback
+    //}
+    String ip = request.getRemoteAddr();
     String key = "rate_limit:" + ip;
     String now = String.valueOf(System.currentTimeMillis());
 
