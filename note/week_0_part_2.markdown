@@ -78,6 +78,7 @@ run java app on background
 
 ```
 nohup java -jar STYLiSH-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
+nohup java -jar w3p4worker-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
 ```
 
 list 8080 port info

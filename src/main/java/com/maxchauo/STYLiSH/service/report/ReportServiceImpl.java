@@ -1,9 +1,11 @@
 package com.maxchauo.STYLiSH.service.report;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.maxchauo.STYLiSH.dto.product.dto.PaymentReportJob;
 import com.maxchauo.STYLiSH.dto.product.dto.report.UserPaymentReportDto;
 import com.maxchauo.STYLiSH.repository.report.ReportRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +13,13 @@ import java.util.*;
 @Log4j2
 @Service
 public class ReportServiceImpl implements ReportService {
+  @Value("${queue.payment.report.key}")
+  private String jobQueueKey;
 
   private final ReportRepository reportRepository;
   private final StringRedisTemplate redisTemplate;
   private final ObjectMapper objectMapper;
+  private static final String JOB_QUEUE_KEY = "payment_report_job_queue";
 
   public ReportServiceImpl(ReportRepository reportRepository, StringRedisTemplate redisTemplate, ObjectMapper objectMapper) {
     this.reportRepository = reportRepository;
@@ -47,22 +52,13 @@ public class ReportServiceImpl implements ReportService {
 
   @Override
   public void enqueueOrdersToQueue(String jobId) {
-    List<Map<String, Object>> orderList = reportRepository.getOrdersToEnqueue();
 
-    for (Map<String, Object> order : orderList) {
-      try {
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("jobId", jobId);
-        payload.put("orderId", order.get("id"));
-        payload.put("userId", order.get("user_id"));
-        payload.put("total", order.get("total"));
-        String json = objectMapper.writeValueAsString(payload);
-        redisTemplate.opsForList().rightPush("order_jobs_queue", json);
-        reportRepository.updateOrderStatus((Long) order.get("id"), "QUEUED");
-      } catch (Exception e) {
-        e.printStackTrace();
-        log.error("Failed to enqueue order {}", order.get("id"), e);
-      }
+    try {
+      PaymentReportJob job = new PaymentReportJob(jobId, "PAYMENT_REPORT", 0);
+      String jobJson = objectMapper.writeValueAsString(job);
+      redisTemplate.opsForList().rightPush(jobQueueKey, jobJson);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to enqueue job: " + e.getMessage(), e);
     }
   }
 }

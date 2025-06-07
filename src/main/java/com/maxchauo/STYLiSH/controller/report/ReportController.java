@@ -29,7 +29,7 @@ public class ReportController {
     return ResponseEntity.ok(new DataWrapper<>(result));
   }
 
-  @PostMapping("/2.0/report/payments")
+  @GetMapping("/2.0/report/payments")
   public ResponseEntity<Map<String, Object>> triggerPaymentReport() {
     String jobId = UUID.randomUUID().toString();
     reportService.enqueueOrdersToQueue(jobId);

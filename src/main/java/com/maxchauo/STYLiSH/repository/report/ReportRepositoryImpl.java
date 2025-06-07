@@ -22,8 +22,7 @@ public class ReportRepositoryImpl implements ReportRepository {
   public List<Map<String, Object>> fetchUserOrders() {
     String sql = "SELECT user_id, total FROM Orders";
     try{
-      List<Map<String, Object>> result = template.queryForList(sql, Map.of());
-      return result;
+      return template.queryForList(sql, Map.of());
     }catch (Exception e) {
       log.warn("Error fetching user orders: " + e.getMessage());
       return List.of(); // Return an empty list in case of error
@@ -36,8 +35,7 @@ public class ReportRepositoryImpl implements ReportRepository {
     try{
       return template.queryForList(sql, new MapSqlParameterSource());
     }catch (Exception e){
-      e.printStackTrace();
-      log.warn("Error fetching orders to enqueue: " + e.getMessage());
+      log.warn("Error fetching orders to enqueue");
       return List.of(); // Return an empty list in case of error
     }
   }
@@ -51,8 +49,7 @@ public class ReportRepositoryImpl implements ReportRepository {
     try{
       template.update(sql, params);
     } catch (Exception e) {
-      e.printStackTrace();
-      log.warn("Failed to update order status for orderId {}: {}", orderId, e.getMessage());
+      log.warn("Failed to update order status for orderId");
       throw new RuntimeException(e);
     }
   }
