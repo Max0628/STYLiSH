@@ -66,6 +66,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         return;
       }
     } catch (RedisConnectionFailureException e) {
+      e.printStackTrace();
       log.warn("Redis unavailable. Bypassing rate limit. IP={}", ip);
       //let the request pass through while redis is down
     }
