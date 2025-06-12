@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponseDto> handleGenericException(Exception exception) {
+	   exception.printStackTrace();
     return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "system error, please try again later");
   }
 
