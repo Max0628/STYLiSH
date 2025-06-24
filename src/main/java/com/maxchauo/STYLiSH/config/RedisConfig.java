@@ -34,8 +34,8 @@ public class RedisConfig {
     LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
             .commandTimeout(Duration.parse(redisTimeout))
             .shutdownTimeout(Duration.ofMillis(100))
-            .useSsl()
-            .disablePeerVerification()
+           .useSsl()
+           .disablePeerVerification()
             .build();
     return new LettuceConnectionFactory(config, clientConfig);
   }

@@ -34,7 +34,7 @@ public class ReportServiceImpl implements ReportService {
     Map<Long, Integer> totalMap = new HashMap<>();
 
     for (Map<String, Object> row : rows) {
-      Long userId = ((Number) row.get("user_id")).longValue();
+      Long userId = ((Number) row.get("userId")).longValue();
       Integer total = ((Number) row.get("total")).intValue();
       totalMap.put(userId, totalMap.getOrDefault(userId, 0) + total);
     }

@@ -20,7 +20,7 @@ public class ReportRepositoryImpl implements ReportRepository {
 
   @Override
   public List<Map<String, Object>> fetchUserOrders() {
-    String sql = "SELECT user_id, total FROM Orders";
+    String sql = "SELECT userId, total FROM OrderReport";
     try{
       return template.queryForList(sql, Map.of());
     }catch (Exception e) {
@@ -31,7 +31,7 @@ public class ReportRepositoryImpl implements ReportRepository {
 
   @Override
   public List<Map<String, Object>> getOrdersToEnqueue() {
-    String sql = "SELECT id, user_id, total FROM Orders WHERE status = 'NEW'";
+    String sql = "SELECT id, user_id, total FROM OrderReport WHERE status = 'NEW'";
     try{
       return template.queryForList(sql, new MapSqlParameterSource());
     }catch (Exception e){
@@ -42,7 +42,7 @@ public class ReportRepositoryImpl implements ReportRepository {
 
   @Override
   public void updateOrderStatus(Long orderId, String status) {
-    String sql = "UPDATE Orders SET status = :status WHERE id = :orderId";
+    String sql = "UPDATE OrderReport SET status = :status WHERE id = :orderId";
     MapSqlParameterSource params = new MapSqlParameterSource()
             .addValue("status", status)
             .addValue("orderId", orderId);

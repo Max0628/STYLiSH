@@ -70,6 +70,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             uri.startsWith("/api/v1/user/signup") ||
             uri.startsWith("/api/v1/products") ||
             uri.startsWith("/api/v1/marketing") ||
+            uri.startsWith("/api/v1/healthCheck") ||
+            uri.startsWith("/api/1.0/report") ||
             uri.startsWith("/images") ||
             uri.equals("/");
   }

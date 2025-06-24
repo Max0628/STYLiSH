@@ -23,7 +23,7 @@ public class ReportController {
 
   private final ReportService reportService;
 
-  @GetMapping("/1.0/report/payments")
+  @GetMapping(" /report/payments")
   public ResponseEntity<DataWrapper<List<UserPaymentReportDto>>> getPaymentReport() {
     List<UserPaymentReportDto> result = reportService.getUserTotalPayments();
     return ResponseEntity.ok(new DataWrapper<>(result));
